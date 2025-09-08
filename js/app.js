@@ -242,10 +242,10 @@ class ENARMApp {
         let questions = this.getFilteredQuestions(specialty, difficulty, mode);
         
         // Shuffle questions
-        questions = this.shuffleArray(questions);
+        questions = CommonUtils.shuffleArray(questions);
         
-        // Take first 10 for practice session
-        this.sessionQuestions = questions.slice(0, 10);
+        // Take first batch for practice session
+        this.sessionQuestions = questions.slice(0, AppConstants.QUESTION.DEFAULT_SESSION_SIZE);
         this.sessionResults = [];
         this.currentQuestionIndex = 0;
         
@@ -339,7 +339,7 @@ class ENARMApp {
         }
         
         if (difficultyElement) {
-            difficultyElement.textContent = this.capitalize(question.difficulty);
+            difficultyElement.textContent = CommonUtils.capitalize(question.difficulty);
         }
         
         if (categoryElement) {
@@ -465,7 +465,7 @@ class ENARMApp {
         document.getElementById('correct-answers').textContent = correctAnswers;
         document.getElementById('incorrect-answers').textContent = incorrectAnswers;
         document.getElementById('accuracy-percentage').textContent = `${accuracy}%`;
-        document.getElementById('time-spent').textContent = this.formatTime(totalTime);
+        document.getElementById('time-spent').textContent = CommonUtils.formatTime(totalTime);
         
         // Setup result actions
         this.setupResultActions();
@@ -486,7 +486,7 @@ class ENARMApp {
 
     // Timer Management
     startTimer() {
-        this.timeRemaining = 150; // 2:30 minutes
+        this.timeRemaining = AppConstants.TIMER.DEFAULT_QUESTION_TIME;
         this.updateTimerDisplay();
         
         this.timer = setInterval(() => {
@@ -513,7 +513,7 @@ class ENARMApp {
             const seconds = this.timeRemaining % 60;
             timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
             
-            if (this.timeRemaining <= 30) {
+            if (this.timeRemaining <= AppConstants.TIMER.WARNING_THRESHOLD) {
                 timerDisplay.style.color = 'var(--error-color)';
             } else {
                 timerDisplay.style.color = 'var(--primary-color)';
@@ -522,7 +522,7 @@ class ENARMApp {
     }
 
     getTimeSpent() {
-        return 150 - this.timeRemaining;
+        return AppConstants.TIMER.DEFAULT_QUESTION_TIME - this.timeRemaining;
     }
 
     // Utility Methods
@@ -545,34 +545,11 @@ class ENARMApp {
         return questions;
     }
 
-    shuffleArray(array) {
-        const shuffled = [...array];
-        for (let i = shuffled.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-        }
-        return shuffled;
-    }
-
-    capitalize(str) {
-        return str.charAt(0).toUpperCase() + str.slice(1);
-    }
-
-    formatTime(seconds) {
-        const hours = Math.floor(seconds / 3600);
-        const minutes = Math.floor((seconds % 3600) / 60);
-        const secs = seconds % 60;
-        
-        if (hours > 0) {
-            return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-        } else {
-            return `${minutes}:${secs.toString().padStart(2, '0')}`;
-        }
-    }
+    // Utility methods now available in CommonUtils
 
     // Progress Tracking
     recordAnswer(question, isCorrect) {
-        const progress = JSON.parse(localStorage.getItem('enarm-progress') || '{}');
+        const progress = StorageService.getItem(AppConstants.STORAGE_KEYS.PROGRESS, {});
         
         if (!progress.answers) {
             progress.answers = [];
@@ -605,11 +582,11 @@ class ENARMApp {
             progress.categories[question.category].correct++;
         }
         
-        localStorage.setItem('enarm-progress', JSON.stringify(progress));
+        StorageService.setItem(AppConstants.STORAGE_KEYS.PROGRESS, progress);
     }
 
     loadProgress() {
-        const progress = JSON.parse(localStorage.getItem('enarm-progress') || '{}');
+        const progress = StorageService.getItem(AppConstants.STORAGE_KEYS.PROGRESS, {});
         return progress;
     }
 
@@ -638,7 +615,7 @@ class ENARMApp {
     toggleBookmark() {
         if (!this.currentQuestion) return;
         
-        const bookmarks = JSON.parse(localStorage.getItem('enarm-bookmarks') || '[]');
+        const bookmarks = StorageService.getItem(AppConstants.STORAGE_KEYS.BOOKMARKS, []);
         const questionId = this.currentQuestion.id;
         const index = bookmarks.indexOf(questionId);
         
@@ -648,12 +625,12 @@ class ENARMApp {
             bookmarks.splice(index, 1);
         }
         
-        localStorage.setItem('enarm-bookmarks', JSON.stringify(bookmarks));
+        StorageService.setItem(AppConstants.STORAGE_KEYS.BOOKMARKS, bookmarks);
         this.updateBookmarkStatus(this.currentQuestion);
     }
 
     updateBookmarkStatus(question) {
-        const bookmarks = JSON.parse(localStorage.getItem('enarm-bookmarks') || '[]');
+        const bookmarks = StorageService.getItem(AppConstants.STORAGE_KEYS.BOOKMARKS, []);
         const isBookmarked = bookmarks.includes(question.id);
         
         const bookmarkButton = document.getElementById('bookmark-question');
@@ -674,27 +651,7 @@ class ENARMApp {
     }
 
     showMessage(message, type = 'info') {
-        // Create a simple toast message
-        const toast = document.createElement('div');
-        toast.className = `toast toast-${type}`;
-        toast.textContent = message;
-        toast.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: var(--primary-color);
-            color: white;
-            padding: 1rem 2rem;
-            border-radius: 8px;
-            z-index: 1000;
-            animation: slideIn 0.3s ease-out;
-        `;
-        
-        document.body.appendChild(toast);
-        
-        setTimeout(() => {
-            toast.remove();
-        }, 3000);
+        CommonUtils.createToast(message, type);
     }
 
     resetQuestionInterface() {

@@ -1,7 +1,7 @@
 // ENARM Prep - Service Worker for Offline Functionality
-const CACHE_NAME = 'enarm-prep-v1.0.0';
-const STATIC_CACHE_NAME = 'enarm-prep-static-v1.0.0';
-const DYNAMIC_CACHE_NAME = 'enarm-prep-dynamic-v1.0.0';
+const CACHE_NAME = 'enarm-prep-v1.1.0';
+const STATIC_CACHE_NAME = 'enarm-prep-static-v1.1.0';
+const DYNAMIC_CACHE_NAME = 'enarm-prep-dynamic-v1.1.0';
 
 // Resources to cache immediately
 const STATIC_ASSETS = [
@@ -9,6 +9,12 @@ const STATIC_ASSETS = [
   './index.html',
   './css/main.css',
   './css/responsive.css',
+  './js/constants.js',
+  './js/error-handler.js',
+  './js/storage-service.js',
+  './js/common-utils.js',
+  './js/theme-manager.js',
+  './js/navigation-manager.js',
   './js/app.js',
   './js/questions.js',
   './js/progress.js',
