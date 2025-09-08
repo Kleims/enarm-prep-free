@@ -1,0 +1,30 @@
+# GitHub Pages configuration
+title: "ENARM Prep - Preparación para Residencias Médicas"
+description: "Plataforma completa para preparar el Examen Nacional de Aspirantes a Residencias Médicas"
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+
+# Exclude files from build
+exclude:
+  - node_modules/
+  - .git/
+  - .github/
+  - README.md
+  - CONTRIBUTING.md
+  - LICENSE
+  - "*.bat"
+
+# Include files
+include:
+  - _config.yml
+
+# Plugins
+plugins:
+  - jekyll-sitemap
+  - jekyll-seo-tag
+
+# SEO
+author: ENARM Prep Team
+lang: es-MX

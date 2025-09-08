@@ -5,27 +5,27 @@ const DYNAMIC_CACHE_NAME = 'enarm-prep-dynamic-v1.0.0';
 
 // Resources to cache immediately
 const STATIC_ASSETS = [
-  '/enarm-prep/',
-  '/enarm-prep/index.html',
-  '/enarm-prep/css/main.css',
-  '/enarm-prep/css/responsive.css',
-  '/enarm-prep/js/app.js',
-  '/enarm-prep/js/questions.js',
-  '/enarm-prep/js/progress.js',
-  '/enarm-prep/js/utils.js',
-  '/enarm-prep/data/questions.json',
+  './',
+  './index.html',
+  './css/main.css',
+  './css/responsive.css',
+  './js/app.js',
+  './js/questions.js',
+  './js/progress.js',
+  './js/utils.js',
+  './data/questions.json',
   'https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js'
 ];
 
 // Dynamic resources that should be cached when accessed
 const DYNAMIC_ASSETS = [
-  '/enarm-prep/pages/',
-  '/enarm-prep/assets/'
+  './pages/',
+  './assets/'
 ];
 
 // Resources that should always be fetched from network
 const NETWORK_ONLY = [
-  '/enarm-prep/api/',
+  './api/',
   'https://api.',
   'chrome-extension://'
 ];
