@@ -24,8 +24,18 @@ class ENARMApp {
     }
     
     initFreemium() {
-        this.freemiumManager = new FreemiumManager();
-        this.freemiumManager.init();
+        try {
+            if (typeof FreemiumManager !== 'undefined') {
+                this.freemiumManager = new FreemiumManager();
+                this.freemiumManager.init();
+            } else {
+                console.warn('FreemiumManager not available');
+                this.freemiumManager = null;
+            }
+        } catch (error) {
+            console.error('Error initializing FreemiumManager:', error);
+            this.freemiumManager = null;
+        }
     }
 
     // Theme Management
@@ -228,18 +238,24 @@ class ENARMApp {
         switch (action) {
             case 'start-practice':
                 // Check if user can start a practice session
-                if (this.freemiumManager.canStartExam()) {
+                if (this.freemiumManager && this.freemiumManager.canStartExam()) {
                     this.showPage('practice');
                     setTimeout(() => this.startPracticeSession(), 100);
-                } else {
+                } else if (this.freemiumManager) {
                     this.freemiumManager.showUpgradeModal('daily-limit');
+                } else {
+                    // Fallback if freemium not available
+                    this.showPage('practice');
+                    setTimeout(() => this.startPracticeSession(), 100);
                 }
                 break;
             case 'view-progress':
                 this.showPage('progress');
                 break;
             case 'show-pricing':
-                this.freemiumManager.showUpgradeModal('general');
+                if (this.freemiumManager) {
+                    this.freemiumManager.showUpgradeModal('general');
+                }
                 break;
         }
     }
@@ -247,7 +263,9 @@ class ENARMApp {
     // Practice Session Management
     startPracticeSession() {
         // Increment exam count for freemium tracking
-        this.freemiumManager.incrementExamCount();
+        if (this.freemiumManager) {
+            this.freemiumManager.incrementExamCount();
+        }
         
         this.showLoading(true);
         

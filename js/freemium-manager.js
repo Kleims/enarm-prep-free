@@ -5,6 +5,10 @@ class FreemiumManager {
     }
 
     loadDailyUsage() {
+        if (typeof StorageService === 'undefined') {
+            return { date: new Date().toDateString(), examsCompleted: 0, questionsAnswered: 0 };
+        }
+        
         const stored = StorageService.getItem(AppConstants.STORAGE_KEYS.DAILY_USAGE);
         const today = new Date().toDateString();
         
@@ -22,6 +26,10 @@ class FreemiumManager {
     }
 
     loadPremiumStatus() {
+        if (typeof StorageService === 'undefined') {
+            return { isPremium: false, expiryDate: null, licenseKey: null };
+        }
+        
         return StorageService.getItem(AppConstants.STORAGE_KEYS.PREMIUM_STATUS) || {
             isPremium: false,
             expiryDate: null,
@@ -48,12 +56,16 @@ class FreemiumManager {
 
     incrementExamCount() {
         this.dailyUsage.examsCompleted++;
-        StorageService.setItem(AppConstants.STORAGE_KEYS.DAILY_USAGE, this.dailyUsage);
+        if (typeof StorageService !== 'undefined') {
+            StorageService.setItem(AppConstants.STORAGE_KEYS.DAILY_USAGE, this.dailyUsage);
+        }
     }
 
     incrementQuestionCount() {
         this.dailyUsage.questionsAnswered++;
-        StorageService.setItem(AppConstants.STORAGE_KEYS.DAILY_USAGE, this.dailyUsage);
+        if (typeof StorageService !== 'undefined') {
+            StorageService.setItem(AppConstants.STORAGE_KEYS.DAILY_USAGE, this.dailyUsage);
+        }
     }
 
     getRemainingExams() {
@@ -111,7 +123,7 @@ class FreemiumManager {
                             <div class="plan-price">
                                 $299 <span class="plan-period">MXN/mes</span>
                             </div>
-                            <div class="savings-badge">¡Ahorra 92% vs competencia!</div>
+                            <div class="savings-badge">¡El mejor valor!</div>
                             <ul class="plan-features">
                                 <li>✅ Exámenes ilimitados</li>
                                 <li>✅ 1000+ preguntas</li>
@@ -135,9 +147,8 @@ class FreemiumManager {
 
                     <div class="upgrade-footer">
                         <p class="money-back">💰 30 días de garantía o tu dinero de vuelta</p>
-                        <p class="competitor-comparison">
-                            <strong>Competencia:</strong> $12,300 - $31,150 MXN &nbsp;&nbsp;
-                            <strong>Nosotros:</strong> $2,392 MXN (8 meses)
+                        <p class="subscription-info">
+                            Cancela en cualquier momento. Sin compromisos a largo plazo.
                         </p>
                     </div>
                 </div>

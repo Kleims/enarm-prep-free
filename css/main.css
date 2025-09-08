@@ -1,11 +1,11 @@
 /* CSS Variables for Theming */
 :root {
   /* Colors - Light Theme */
-  --primary-color: #2563eb;
-  --primary-dark: #1d4ed8;
-  --primary-light: #3b82f6;
-  --secondary-color: #64748b;
-  --accent-color: #0ea5e9;
+  --primary-color: #2c5aa0;
+  --primary-dark: #1e4080;
+  --primary-light: #4a73b8;
+  --secondary-color: #6c757d;
+  --accent-color: #28a745;
   
   --background-primary: #ffffff;
   --background-secondary: #f8fafc;
@@ -18,9 +18,9 @@
   --border-color: #e2e8f0;
   --border-light: #f1f5f9;
   
-  --success-color: #10b981;
-  --warning-color: #f59e0b;
-  --error-color: #ef4444;
+  --success-color: #28a745;
+  --warning-color: #ffc107;
+  --error-color: #dc3545;
   
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
