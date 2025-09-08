@@ -167,7 +167,7 @@ class AppConstants {
             QUESTION_LIMIT: 50,
             ANALYTICS_LIMIT: 7, // days of history
             STREAK_LIMIT: 7, // days tracking
-            PREMIUM_PRICE: '$299 MXN/mes',
+            PREMIUM_PRICE: '$299/mes',
             FEATURES_LOCKED: [
                 'Exámenes ilimitados',
                 'Banco completo de preguntas',

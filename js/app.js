@@ -51,7 +51,7 @@ class ENARMApp {
         
         const themeToggle = document.getElementById('theme-toggle');
         if (themeToggle) {
-            const icon = theme === 'dark' ? '☀️' : '🌙';
+            const icon = theme === 'dark' ? '○' : '●';
             themeToggle.querySelector('.theme-icon').textContent = icon;
         }
     }

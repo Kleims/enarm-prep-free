@@ -2,8 +2,9 @@
 
 /* Hero Section Pricing Banner */
 .hero-pricing-banner {
-    background: linear-gradient(135deg, #10b981, #059669);
-    color: white;
+    background: var(--background-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
     padding: 0.75rem 1.5rem;
     border-radius: 8px;
     margin: 1rem 0;
@@ -190,8 +191,8 @@
 
 /* Premium Badges */
 .premium-badge {
-    background: linear-gradient(45deg, #ffd700, #ffed4a);
-    color: #333;
+    background: var(--text-primary);
+    color: var(--background-primary);
     padding: 0.25rem 0.5rem;
     border-radius: 12px;
     font-size: 0.75rem;
@@ -242,8 +243,9 @@
 
 /* Upgrade Prompts */
 .upgrade-prompt {
-    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-    color: white;
+    background: var(--background-secondary);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
     padding: 1rem;
     border-radius: 8px;
     margin: 1rem 0;
@@ -260,8 +262,8 @@
 }
 
 .upgrade-prompt .btn {
-    background: white;
-    color: var(--primary-color);
+    background: var(--background-primary);
+    color: var(--text-primary);
     border: none;
     padding: 0.75rem 1.5rem;
     border-radius: 6px;

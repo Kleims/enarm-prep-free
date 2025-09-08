@@ -77,7 +77,9 @@ class FreemiumManager {
         const modal = document.getElementById('upgrade-modal') || this.createUpgradeModal();
         const reasonText = this.getUpgradeReasonText(reason);
         
-        modal.querySelector('.upgrade-reason').textContent = reasonText;
+        if (modal.querySelector('.upgrade-reason')) {
+            modal.querySelector('.upgrade-reason').textContent = reasonText;
+        }
         modal.classList.add('active');
         document.body.style.overflow = 'hidden';
     }
@@ -99,7 +101,7 @@ class FreemiumManager {
                     <button class="modal-close" onclick="FreemiumManager.closeUpgradeModal()">&times;</button>
                     
                     <div class="upgrade-header">
-                        <h2>🚀 ¡Actualiza a Premium!</h2>
+                        <h2>Actualiza a Premium</h2>
                         <p class="upgrade-reason">Desbloquea todas las funciones</p>
                     </div>
 
@@ -108,12 +110,12 @@ class FreemiumManager {
                             <h3>Plan Gratuito</h3>
                             <div class="plan-price">$0</div>
                             <ul class="plan-features">
-                                <li>✅ 1 examen por día</li>
-                                <li>✅ 50 preguntas de práctica</li>
-                                <li>✅ Progreso básico</li>
-                                <li>❌ Análisis avanzado</li>
-                                <li>❌ Exámenes ilimitados</li>
-                                <li>❌ Banco completo</li>
+                                <li>• 1 examen por día</li>
+                                <li>• 50 preguntas de práctica</li>
+                                <li>• Progreso básico</li>
+                                <li>× Análisis avanzado</li>
+                                <li>× Exámenes ilimitados</li>
+                                <li>× Banco completo</li>
                             </ul>
                         </div>
                         
@@ -121,19 +123,19 @@ class FreemiumManager {
                             <div class="plan-badge">¡Popular!</div>
                             <h3>Plan Premium</h3>
                             <div class="plan-price">
-                                $299 <span class="plan-period">MXN/mes</span>
+                                $299 <span class="plan-period">/mes</span>
                             </div>
                             <div class="savings-badge">¡El mejor valor!</div>
                             <ul class="plan-features">
-                                <li>✅ Exámenes ilimitados</li>
-                                <li>✅ 1000+ preguntas</li>
-                                <li>✅ Análisis avanzado</li>
-                                <li>✅ Seguimiento extendido</li>
-                                <li>✅ Simulaciones por especialidad</li>
-                                <li>✅ Soporte prioritario</li>
+                                <li>• Exámenes ilimitados</li>
+                                <li>• 1000+ preguntas</li>
+                                <li>• Análisis avanzado</li>
+                                <li>• Seguimiento extendido</li>
+                                <li>• Simulaciones por especialidad</li>
+                                <li>• Soporte prioritario</li>
                             </ul>
                             <button class="btn btn-primary btn-upgrade" onclick="FreemiumManager.redirectToPayment()">
-                                🚀 Actualizar Ahora
+                                Actualizar Ahora
                             </button>
                         </div>
                     </div>
@@ -146,7 +148,7 @@ class FreemiumManager {
                     </div>
 
                     <div class="upgrade-footer">
-                        <p class="money-back">💰 30 días de garantía o tu dinero de vuelta</p>
+                        <p class="money-back">30 días de garantía o tu dinero de vuelta</p>
                         <p class="subscription-info">
                             Cancela en cualquier momento. Sin compromisos a largo plazo.
                         </p>
@@ -169,7 +171,7 @@ class FreemiumManager {
 
     static redirectToPayment() {
         // For now, show alert - later replace with actual payment link
-        alert('Redirigiendo a la página de pago... 🚀\n\n' +
+        alert('Redirigiendo a la página de pago...\n\n' +
               'En desarrollo: Se integrará con Stripe/PayPal para procesamiento seguro.');
         
         // Future implementation:
@@ -185,7 +187,7 @@ class FreemiumManager {
             if (!feature.querySelector('.premium-badge')) {
                 const badge = document.createElement('span');
                 badge.className = 'premium-badge';
-                badge.textContent = '👑 Premium';
+                badge.textContent = 'Premium';
                 feature.appendChild(badge);
             }
         });
