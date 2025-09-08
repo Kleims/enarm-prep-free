@@ -5,7 +5,9 @@ class AppConstants {
             THEME: 'enarm-theme',
             PROGRESS: 'enarm-progress',
             SESSION: 'enarm-session',
-            BOOKMARKS: 'enarm-bookmarks'
+            BOOKMARKS: 'enarm-bookmarks',
+            DAILY_USAGE: 'enarm-daily-usage',
+            PREMIUM_STATUS: 'enarm-premium'
         };
     }
 
@@ -140,7 +142,9 @@ class AppConstants {
                 QUESTION_LOAD_FAILED: 'Error al cargar las preguntas.',
                 SESSION_SAVE_FAILED: 'Error al guardar la sesión.',
                 INVALID_QUESTION: 'La pregunta no es válida.',
-                DUPLICATE_QUESTION_ID: 'El ID de la pregunta ya existe.'
+                DUPLICATE_QUESTION_ID: 'El ID de la pregunta ya existe.',
+                DAILY_LIMIT_REACHED: 'Has alcanzado el límite diario gratuito.',
+                PREMIUM_REQUIRED: 'Esta función requiere cuenta Premium.'
             },
             SUCCESS: {
                 NEWSLETTER_SUBSCRIBED: '¡Gracias por suscribirte! Recibirás noticias pronto.',
@@ -154,6 +158,23 @@ class AppConstants {
                 SAVING: 'Guardando...',
                 PROCESSING: 'Procesando...'
             }
+        };
+    }
+
+    static get FREEMIUM() {
+        return {
+            DAILY_EXAM_LIMIT: 1,
+            QUESTION_LIMIT: 50,
+            ANALYTICS_LIMIT: 7, // days of history
+            STREAK_LIMIT: 7, // days tracking
+            PREMIUM_PRICE: '$299 MXN/mes',
+            FEATURES_LOCKED: [
+                'Exámenes ilimitados',
+                'Banco completo de preguntas',
+                'Análisis avanzado',
+                'Seguimiento de progreso extendido',
+                'Simulaciones especializadas por especialidad'
+            ]
         };
     }
 

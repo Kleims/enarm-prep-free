@@ -19,6 +19,7 @@
     <!-- CSS -->
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/freemium.css">
     
     <!-- Chart.js for progress visualization -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
@@ -75,19 +76,28 @@
             <div class="hero-section">
                 <div class="container">
                     <div class="hero-content">
-                        <h1 class="hero-title">Domina tu ENARM con Confianza</h1>
+                        <h1 class="hero-title">🚀 Domina tu ENARM con Confianza</h1>
+                        <div class="hero-pricing-banner">
+                            <span class="price-comparison">
+                                <span class="competitors-price">Competencia: $12K-31K MXN</span>
+                                <span class="our-price">Nosotros: ¡GRATIS para empezar!</span>
+                            </span>
+                        </div>
                         <p class="hero-description">
-                            La plataforma más completa para preparar el Examen Nacional de Aspirantes a Residencias Médicas.
-                            Practica con miles de preguntas, estudia con nuestras guías especializadas y monitorea tu progreso.
+                            La plataforma más completa para preparar el ENARM. Ahorra 92% vs cursos tradicionales.
+                            Comienza gratis y actualiza solo si necesitas más funciones.
                         </p>
                         <div class="hero-actions">
                             <button class="btn btn-primary" data-action="start-practice">
-                                Comenzar Práctica
+                                🎯 Comenzar GRATIS Ahora
                             </button>
-                            <button class="btn btn-secondary" data-action="view-progress">
-                                Ver Mi Progreso
+                            <button class="btn btn-secondary" data-action="show-pricing">
+                                💎 Ver Planes Premium
                             </button>
                         </div>
+                        
+                        <!-- Daily Usage Stats -->
+                        <div class="daily-stats"></div>
                     </div>
                     
                     <div class="hero-stats">
@@ -658,6 +668,7 @@
     <!-- Feature modules -->
     <script src="js/theme-manager.js"></script>
     <script src="js/navigation-manager.js"></script>
+    <script src="js/freemium-manager.js"></script>
     
     <!-- Main application modules -->
     <script src="js/questions.js"></script>

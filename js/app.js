@@ -9,6 +9,7 @@ class ENARMApp {
         this.sessionResults = [];
         this.timer = null;
         this.timeRemaining = 0;
+        this.freemiumManager = null;
         
         this.init();
     }
@@ -18,7 +19,13 @@ class ENARMApp {
         this.setupEventListeners();
         this.loadProgress();
         this.setupServiceWorker();
+        this.initFreemium();
         this.showPage('home');
+    }
+    
+    initFreemium() {
+        this.freemiumManager = new FreemiumManager();
+        this.freemiumManager.init();
     }
 
     // Theme Management
@@ -220,17 +227,28 @@ class ENARMApp {
     handleAction(action) {
         switch (action) {
             case 'start-practice':
-                this.showPage('practice');
-                setTimeout(() => this.startPracticeSession(), 100);
+                // Check if user can start a practice session
+                if (this.freemiumManager.canStartExam()) {
+                    this.showPage('practice');
+                    setTimeout(() => this.startPracticeSession(), 100);
+                } else {
+                    this.freemiumManager.showUpgradeModal('daily-limit');
+                }
                 break;
             case 'view-progress':
                 this.showPage('progress');
+                break;
+            case 'show-pricing':
+                this.freemiumManager.showUpgradeModal('general');
                 break;
         }
     }
 
     // Practice Session Management
     startPracticeSession() {
+        // Increment exam count for freemium tracking
+        this.freemiumManager.incrementExamCount();
+        
         this.showLoading(true);
         
         // Get filter settings
