@@ -1,0 +1,48 @@
+MIT License
+
+Copyright (c) 2024 ENARM Prep
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+## Medical Content Disclaimer
+
+The medical content, questions, explanations, and references provided in this
+software are for educational purposes only and should not be used as a substitute
+for professional medical advice, diagnosis, or treatment.
+
+- The content is based on medical literature and guidelines available at the time
+  of creation and may not reflect the most current medical knowledge.
+- Always consult with qualified healthcare professionals for medical advice.
+- The creators and contributors are not responsible for any consequences arising
+  from the use of this educational material.
+- Users are encouraged to verify information with authoritative medical sources.
+
+## Third-Party Resources
+
+This project uses the following third-party resources:
+
+- **Chart.js** - Licensed under MIT License
+- **Medical guidelines and references** - Various licenses, used under fair use
+  for educational purposes
+- **Icons and fonts** - Various open source licenses
+
+All third-party resources are properly attributed and used in accordance with
+their respective licenses.

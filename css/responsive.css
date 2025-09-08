@@ -1,0 +1,630 @@
+/* Responsive Design */
+
+/* Extra Large Screens */
+@media (min-width: 1400px) {
+  .container {
+    max-width: 1320px;
+  }
+  
+  .hero-title {
+    font-size: 4rem;
+  }
+  
+  .features-grid,
+  .specialties-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Large Screens */
+@media (max-width: 1200px) {
+  .container {
+    padding: 0 var(--spacing-md);
+  }
+  
+  .hero-title {
+    font-size: 3rem;
+  }
+  
+  .features-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .charts-section {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Medium Screens */
+@media (max-width: 992px) {
+  .hero-title {
+    font-size: 2.5rem;
+  }
+  
+  .hero-description {
+    font-size: var(--font-size-base);
+  }
+  
+  .features-grid,
+  .specialties-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .study-guides-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .practice-controls {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .question-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-md);
+  }
+  
+  .question-meta {
+    flex-wrap: wrap;
+  }
+  
+  .results-summary {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .progress-overview {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Small Screens */
+@media (max-width: 768px) {
+  /* Navigation */
+  .nav-menu {
+    position: fixed;
+    top: var(--navbar-height);
+    left: -100%;
+    width: 100%;
+    height: calc(100vh - var(--navbar-height));
+    background-color: var(--background-primary);
+    border-right: 1px solid var(--border-color);
+    flex-direction: column;
+    align-items: flex-start;
+    padding: var(--spacing-lg);
+    transition: left var(--transition-normal);
+    z-index: 99;
+  }
+  
+  .nav-menu.active {
+    left: 0;
+  }
+  
+  .nav-link {
+    width: 100%;
+    justify-content: flex-start;
+    padding: var(--spacing-md);
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  .nav-hamburger {
+    display: flex;
+  }
+  
+  .nav-hamburger.active span:nth-child(1) {
+    transform: rotate(45deg) translate(6px, 6px);
+  }
+  
+  .nav-hamburger.active span:nth-child(2) {
+    opacity: 0;
+  }
+  
+  .nav-hamburger.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(6px, -6px);
+  }
+  
+  /* Typography */
+  .hero-title {
+    font-size: 2rem;
+  }
+  
+  .hero-description {
+    font-size: var(--font-size-sm);
+  }
+  
+  .section-title {
+    font-size: var(--font-size-2xl);
+  }
+  
+  /* Layout */
+  .hero-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .hero-actions .btn {
+    width: 100%;
+    max-width: 300px;
+  }
+  
+  .hero-stats {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-sm);
+  }
+  
+  .stat-card {
+    padding: var(--spacing-md);
+  }
+  
+  .stat-number {
+    font-size: var(--font-size-xl);
+  }
+  
+  /* Grids */
+  .features-grid,
+  .specialties-grid,
+  .study-guides-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .practice-controls {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+  }
+  
+  .progress-overview {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .results-summary {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  /* Question Interface */
+  .question-header {
+    padding: var(--spacing-md);
+  }
+  
+  .question-content {
+    padding: var(--spacing-lg);
+  }
+  
+  .question-text {
+    font-size: var(--font-size-base);
+  }
+  
+  .option-label {
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: var(--font-size-sm);
+  }
+  
+  .question-actions {
+    flex-direction: column;
+  }
+  
+  .question-actions .btn {
+    width: 100%;
+  }
+  
+  .answer-explanation {
+    padding: var(--spacing-lg);
+  }
+  
+  .explanation-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-xs);
+  }
+  
+  /* Forms */
+  .input-group {
+    flex-direction: column;
+  }
+  
+  .input-group input {
+    min-width: auto;
+  }
+  
+  /* Tables */
+  .reference-table,
+  .stats-table {
+    font-size: var(--font-size-xs);
+  }
+  
+  .reference-table th,
+  .reference-table td,
+  .stats-table th,
+  .stats-table td {
+    padding: var(--spacing-sm);
+  }
+  
+  /* Footer */
+  .footer-content {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-lg);
+  }
+  
+  .social-links {
+    justify-content: center;
+  }
+  
+  /* Flashcards */
+  .flashcard {
+    height: 250px;
+  }
+  
+  .flashcard-actions {
+    flex-direction: column;
+  }
+  
+  .flashcard-actions .btn {
+    width: 100%;
+    max-width: 200px;
+  }
+}
+
+/* Extra Small Screens */
+@media (max-width: 576px) {
+  .container {
+    padding: 0 var(--spacing-sm);
+  }
+  
+  /* Typography */
+  h1 { font-size: var(--font-size-3xl); }
+  h2 { font-size: var(--font-size-2xl); }
+  h3 { font-size: var(--font-size-xl); }
+  
+  .hero-title {
+    font-size: 1.75rem;
+  }
+  
+  .section-title {
+    font-size: var(--font-size-xl);
+  }
+  
+  /* Navigation */
+  .nav-container {
+    padding: 0 var(--spacing-sm);
+  }
+  
+  .nav-logo h1 {
+    font-size: var(--font-size-lg);
+  }
+  
+  .nav-subtitle {
+    display: none;
+  }
+  
+  /* Layout Adjustments */
+  .page-header {
+    padding: var(--spacing-lg) 0;
+  }
+  
+  .hero-section {
+    padding: var(--spacing-xl) 0;
+  }
+  
+  .features-section,
+  .specialties-section {
+    padding: var(--spacing-xl) 0;
+  }
+  
+  .newsletter-section {
+    padding: var(--spacing-xl) 0;
+  }
+  
+  /* Cards */
+  .feature-card,
+  .specialty-card,
+  .study-guide-card {
+    padding: var(--spacing-lg);
+  }
+  
+  .stat-card {
+    padding: var(--spacing-sm);
+  }
+  
+  .stat-number {
+    font-size: var(--font-size-lg);
+  }
+  
+  .progress-card {
+    padding: var(--spacing-lg);
+  }
+  
+  .progress-number {
+    font-size: var(--font-size-2xl);
+  }
+  
+  /* Hero Stats */
+  .hero-stats {
+    grid-template-columns: 1fr;
+  }
+  
+  /* Progress Overview */
+  .progress-overview {
+    grid-template-columns: 1fr;
+  }
+  
+  .results-summary {
+    grid-template-columns: 1fr;
+  }
+  
+  /* Question Interface */
+  .question-container {
+    margin: 0 calc(-1 * var(--spacing-sm));
+    border-radius: 0;
+  }
+  
+  .question-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .question-meta {
+    justify-content: space-between;
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  .timer-display {
+    font-size: var(--font-size-base);
+  }
+  
+  .question-content {
+    padding: var(--spacing-md);
+  }
+  
+  .answer-explanation {
+    padding: var(--spacing-md);
+  }
+  
+  /* Practice Controls */
+  .practice-controls {
+    padding: var(--spacing-md);
+    margin: 0 calc(-1 * var(--spacing-sm));
+    border-radius: 0;
+  }
+  
+  /* Reference Tabs */
+  .reference-tabs {
+    flex-wrap: wrap;
+  }
+  
+  .tab-button {
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: var(--font-size-sm);
+  }
+  
+  /* Flashcards */
+  .flashcard {
+    height: 200px;
+  }
+  
+  .flashcard-front h3,
+  .flashcard-back h3 {
+    font-size: var(--font-size-lg);
+  }
+  
+  .flashcard-back p {
+    font-size: var(--font-size-sm);
+  }
+}
+
+/* Ultra Small Screens */
+@media (max-width: 400px) {
+  .container {
+    padding: 0 var(--spacing-xs);
+  }
+  
+  .nav-container {
+    padding: 0 var(--spacing-xs);
+  }
+  
+  .hero-title {
+    font-size: 1.5rem;
+  }
+  
+  .feature-card,
+  .specialty-card,
+  .study-guide-card,
+  .progress-card {
+    padding: var(--spacing-md);
+  }
+  
+  .question-content {
+    padding: var(--spacing-sm);
+  }
+  
+  .answer-explanation {
+    padding: var(--spacing-sm);
+  }
+  
+  .practice-controls {
+    padding: var(--spacing-sm);
+  }
+  
+  .option-label {
+    padding: var(--spacing-sm);
+    font-size: var(--font-size-xs);
+  }
+  
+  .flashcard {
+    height: 180px;
+  }
+}
+
+/* Landscape Orientation on Mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+  .hero-section {
+    padding: var(--spacing-lg) 0;
+  }
+  
+  .hero-title {
+    font-size: 1.5rem;
+  }
+  
+  .hero-stats {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .features-section,
+  .specialties-section {
+    padding: var(--spacing-lg) 0;
+  }
+  
+  .flashcard {
+    height: 150px;
+  }
+}
+
+/* High DPI Displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .feature-icon,
+  .specialty-icon {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+}
+
+/* Reduced Motion Preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .flashcard-front,
+  .flashcard-back {
+    transition: none;
+  }
+  
+  .spinner {
+    animation: none;
+    border-top-color: transparent;
+  }
+}
+
+/* Touch Device Optimizations */
+@media (hover: none) and (pointer: coarse) {
+  .btn,
+  .nav-link,
+  .option-label {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  .nav-link {
+    padding: var(--spacing-md) var(--spacing-lg);
+  }
+  
+  .option-label {
+    padding: var(--spacing-md);
+  }
+  
+  .feature-card:hover,
+  .specialty-card:hover,
+  .study-guide-card:hover {
+    transform: none;
+  }
+}
+
+/* Dark Mode Responsive Adjustments */
+@media (max-width: 768px) {
+  [data-theme="dark"] .nav-menu {
+    background-color: var(--background-primary);
+    border-right-color: var(--border-color);
+  }
+  
+  [data-theme="dark"] .loading-spinner {
+    background-color: rgba(15, 23, 42, 0.9);
+  }
+}
+
+/* Print Responsive */
+@media print {
+  .container {
+    max-width: none;
+    padding: 0;
+  }
+  
+  .page {
+    display: block !important;
+    padding-top: 0 !important;
+  }
+  
+  .features-grid,
+  .specialties-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-md);
+  }
+  
+  .question-container {
+    break-inside: avoid;
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  .feature-card,
+  .specialty-card {
+    break-inside: avoid;
+    box-shadow: none;
+    border: 1px solid #ccc;
+  }
+}
+
+/* Accessibility Responsive */
+@media (max-width: 768px) {
+  .sr-only {
+    position: static;
+    width: auto;
+    height: auto;
+    margin: 0;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+  }
+}
+
+/* Container Queries Support */
+@supports (container-type: inline-size) {
+  .question-container {
+    container-type: inline-size;
+  }
+  
+  @container (max-width: 600px) {
+    .question-header {
+      flex-direction: column;
+    }
+    
+    .question-actions {
+      flex-direction: column;
+    }
+  }
+}
+
+/* Grid Support Fallback */
+@supports not (display: grid) {
+  .features-grid,
+  .specialties-grid,
+  .study-guides-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-lg);
+  }
+  
+  .feature-card,
+  .specialty-card,
+  .study-guide-card {
+    flex: 1 1 300px;
+  }
+  
+  .practice-controls {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .control-group {
+    flex: 1 1 200px;
+  }
+}
