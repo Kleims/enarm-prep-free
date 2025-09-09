@@ -50,9 +50,7 @@ class AppConstants {
         return {
             HOME: 'home',
             PRACTICE: 'practice',
-            PROGRESS: 'progress',
-            STUDY_GUIDES: 'study-guides',
-            FLASHCARDS: 'flashcards'
+            PROGRESS: 'progress'
         };
     }
 

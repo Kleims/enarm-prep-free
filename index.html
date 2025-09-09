@@ -40,14 +40,8 @@
                 <a href="#practice" class="nav-link" data-page="practice">
                     Práctica
                 </a>
-                <a href="#study-guides" class="nav-link" data-page="study-guides">
-                    Guías de Estudio
-                </a>
                 <a href="#progress" class="nav-link" data-page="progress">
                     Progreso
-                </a>
-                <a href="#flashcards" class="nav-link" data-page="flashcards">
-                    Flashcards
                 </a>
             </div>
             
@@ -152,7 +146,6 @@
                     
                     <div class="specialties-grid">
                         <div class="specialty-card" data-specialty="medicina-interna">
-                            <div class="specialty-icon">🫀</div>
                             <h3>Medicina Interna</h3>
                             <div class="specialty-stats">
                                 <span class="question-count">75 preguntas</span>
@@ -160,7 +153,6 @@
                         </div>
                         
                         <div class="specialty-card" data-specialty="cirugia-general">
-                            <div class="specialty-icon">🔪</div>
                             <h3>Cirugía General</h3>
                             <div class="specialty-stats">
                                 <span class="question-count">68 preguntas</span>
@@ -168,7 +160,6 @@
                         </div>
                         
                         <div class="specialty-card" data-specialty="pediatria">
-                            <div class="specialty-icon">🧸</div>
                             <h3>Pediatría</h3>
                             <div class="specialty-stats">
                                 <span class="question-count">82 preguntas</span>
@@ -176,7 +167,6 @@
                         </div>
                         
                         <div class="specialty-card" data-specialty="ginecologia">
-                            <div class="specialty-icon">🤱</div>
                             <h3>Ginecología y Obstetricia</h3>
                             <div class="specialty-stats">
                                 <span class="question-count">71 preguntas</span>
@@ -184,7 +174,6 @@
                         </div>
                         
                         <div class="specialty-card" data-specialty="medicina-familiar">
-                            <div class="specialty-icon">👨‍👩‍👧‍👦</div>
                             <h3>Medicina Familiar</h3>
                             <div class="specialty-stats">
                                 <span class="question-count">59 preguntas</span>
@@ -192,7 +181,6 @@
                         </div>
                         
                         <div class="specialty-card" data-specialty="urgencias">
-                            <div class="specialty-icon">🚨</div>
                             <h3>Urgencias Médicas</h3>
                             <div class="specialty-stats">
                                 <span class="question-count">64 preguntas</span>
@@ -211,7 +199,7 @@
                         
                         <form class="newsletter-form" id="newsletter-form">
                             <div class="input-group">
-                                <input type="email" placeholder="tu@correo.com" required>
+                                <input type="email" placeholder="tucorreo@ejemplo.com" required>
                                 <button type="submit" class="btn btn-primary">Suscribirse</button>
                             </div>
                         </form>
@@ -326,7 +314,7 @@
 
                         <div class="question-actions">
                             <button class="btn btn-outline" id="bookmark-question">
-                                <span id="bookmark-icon">🔖</span> Guardar
+                                Guardar
                             </button>
                             <button class="btn btn-primary" id="submit-answer">Responder</button>
                             <button class="btn btn-secondary" id="next-question" style="display: none;">Siguiente</button>
@@ -381,218 +369,41 @@
             </div>
         </section>
 
-        <!-- Study Guides Page -->
-        <section id="study-guides-page" class="page">
-            <div class="container">
-                <div class="page-header">
-                    <h1>Guías de Estudio</h1>
-                    <p>Recursos completos organizados por especialidad médica</p>
-                </div>
-
-                <div class="study-guides-grid">
-                    <div class="study-guide-card">
-                        <div class="guide-header">
-                            <div class="guide-icon">🫀</div>
-                            <h3>Cardiología</h3>
-                        </div>
-                        <div class="guide-content">
-                            <ul>
-                                <li>Insuficiencia Cardíaca</li>
-                                <li>Arritmias Cardíacas</li>
-                                <li>Síndrome Coronario Agudo</li>
-                                <li>Hipertensión Arterial</li>
-                            </ul>
-                        </div>
-                        <button class="btn btn-outline">Ver Guía Completa</button>
-                    </div>
-
-                    <div class="study-guide-card">
-                        <div class="guide-header">
-                            <div class="guide-icon">🧠</div>
-                            <h3>Neurología</h3>
-                        </div>
-                        <div class="guide-content">
-                            <ul>
-                                <li>Accidente Cerebrovascular</li>
-                                <li>Epilepsia</li>
-                                <li>Cefaleas</li>
-                                <li>Enfermedad de Parkinson</li>
-                            </ul>
-                        </div>
-                        <button class="btn btn-outline">Ver Guía Completa</button>
-                    </div>
-
-                    <div class="study-guide-card">
-                        <div class="guide-header">
-                            <div class="guide-icon">🫁</div>
-                            <h3>Neumología</h3>
-                        </div>
-                        <div class="guide-content">
-                            <ul>
-                                <li>EPOC</li>
-                                <li>Asma Bronquial</li>
-                                <li>Neumonía</li>
-                                <li>Tuberculosis Pulmonar</li>
-                            </ul>
-                        </div>
-                        <button class="btn btn-outline">Ver Guía Completa</button>
-                    </div>
-                </div>
-
-                <!-- Quick Reference Tables -->
-                <div class="quick-reference-section">
-                    <h2>Tablas de Referencia Rápida</h2>
-                    
-                    <div class="reference-tabs">
-                        <button class="tab-button active" data-tab="drug-dosages">Dosis de Medicamentos</button>
-                        <button class="tab-button" data-tab="normal-values">Valores Normales</button>
-                        <button class="tab-button" data-tab="emergency-protocols">Protocolos de Urgencia</button>
-                    </div>
-
-                    <div class="tab-content">
-                        <div id="drug-dosages" class="tab-pane active">
-                            <table class="reference-table">
-                                <thead>
-                                    <tr>
-                                        <th>Medicamento</th>
-                                        <th>Dosis Adulto</th>
-                                        <th>Vía</th>
-                                        <th>Indicación</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Epinefrina</td>
-                                        <td>0.01 mg/kg (máx 0.5mg)</td>
-                                        <td>IM</td>
-                                        <td>Anafilaxia</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Adenosina</td>
-                                        <td>6-12 mg</td>
-                                        <td>IV</td>
-                                        <td>TSV</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Amiodarona</td>
-                                        <td>150 mg</td>
-                                        <td>IV</td>
-                                        <td>Arritmias ventriculares</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
         <!-- Progress Page -->
         <section id="progress-page" class="page">
             <div class="container">
                 <div class="page-header">
                     <h1>Mi Progreso</h1>
-                    <p>Analiza tu rendimiento y identifica áreas de mejora</p>
+                    <p>Seguimiento detallado de tu preparación para el ENARM</p>
                 </div>
 
-                <!-- Progress Overview -->
                 <div class="progress-overview">
                     <div class="progress-card">
                         <h3>Preguntas Respondidas</h3>
                         <div class="progress-number" id="total-answered">0</div>
-                        <div class="progress-subtext">de 500+ disponibles</div>
                     </div>
-                    
                     <div class="progress-card">
                         <h3>Precisión General</h3>
                         <div class="progress-number" id="overall-accuracy">0%</div>
-                        <div class="progress-subtext">promedio histórico</div>
                     </div>
-                    
                     <div class="progress-card">
-                        <h3>Racha de Estudio</h3>
-                        <div class="progress-number" id="study-streak">0</div>
-                        <div class="progress-subtext">días consecutivos</div>
+                        <h3>Tiempo de Estudio</h3>
+                        <div class="progress-number" id="study-time">0 min</div>
                     </div>
-                    
                     <div class="progress-card">
-                        <h3>Tiempo Total</h3>
-                        <div class="progress-number" id="total-study-time">0h</div>
-                        <div class="progress-subtext">tiempo de estudio</div>
+                        <h3>Racha Actual</h3>
+                        <div class="progress-number" id="current-streak">0 días</div>
                     </div>
                 </div>
 
-                <!-- Progress Charts -->
-                <div class="charts-section">
+                <div class="progress-charts">
                     <div class="chart-container">
-                        <h3>Progreso por Especialidad</h3>
+                        <h3>Rendimiento por Especialidad</h3>
                         <canvas id="specialty-chart"></canvas>
                     </div>
-                    
                     <div class="chart-container">
-                        <h3>Rendimiento Semanal</h3>
-                        <canvas id="weekly-chart"></canvas>
-                    </div>
-                </div>
-
-                <!-- Detailed Stats -->
-                <div class="detailed-stats">
-                    <h3>Estadísticas Detalladas</h3>
-                    <div class="stats-table-container">
-                        <table class="stats-table">
-                            <thead>
-                                <tr>
-                                    <th>Especialidad</th>
-                                    <th>Respondidas</th>
-                                    <th>Correctas</th>
-                                    <th>Precisión</th>
-                                    <th>Última Sesión</th>
-                                </tr>
-                            </thead>
-                            <tbody id="specialty-stats">
-                                <!-- Dynamic content -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Flashcards Page -->
-        <section id="flashcards-page" class="page">
-            <div class="container">
-                <div class="page-header">
-                    <h1>Flashcards</h1>
-                    <p>Repasa conceptos clave con nuestro sistema de tarjetas</p>
-                </div>
-
-                <div class="flashcard-controls">
-                    <select id="flashcard-category">
-                        <option value="all">Todas las categorías</option>
-                        <option value="cardiologia">Cardiología</option>
-                        <option value="neurologia">Neurología</option>
-                        <option value="gastroenterologia">Gastroenterología</option>
-                    </select>
-                    
-                    <button class="btn btn-primary" id="start-flashcards">Comenzar Repaso</button>
-                </div>
-
-                <div class="flashcard-container" id="flashcard-container" style="display: none;">
-                    <div class="flashcard" id="flashcard">
-                        <div class="flashcard-front">
-                            <h3>¿Cuál es la principal causa de insuficiencia cardíaca?</h3>
-                        </div>
-                        <div class="flashcard-back">
-                            <h3>Enfermedad Coronaria</h3>
-                            <p>La enfermedad arterial coronaria es responsable del 60-70% de los casos de insuficiencia cardíaca, seguida por la hipertensión arterial.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="flashcard-actions">
-                        <button class="btn btn-outline" id="flip-card">Voltear Tarjeta</button>
-                        <button class="btn btn-danger" id="card-difficult">Difícil</button>
-                        <button class="btn btn-warning" id="card-medium">Medio</button>
-                        <button class="btn btn-success" id="card-easy">Fácil</button>
+                        <h3>Progreso Semanal</h3>
+                        <canvas id="weekly-progress-chart"></canvas>
                     </div>
                 </div>
             </div>
@@ -621,10 +432,10 @@
                 <div class="footer-section">
                     <h4>Síguenos</h4>
                     <div class="social-links">
-                        <a href="#" aria-label="Facebook">📘</a>
-                        <a href="#" aria-label="Twitter">🐦</a>
-                        <a href="#" aria-label="Instagram">📷</a>
-                        <a href="#" aria-label="YouTube">📺</a>
+                        <a href="#" aria-label="Facebook">FB</a>
+                        <a href="#" aria-label="Twitter">TW</a>
+                        <a href="#" aria-label="Instagram">IG</a>
+                        <a href="#" aria-label="YouTube">YT</a>
                     </div>
                 </div>
             </div>
