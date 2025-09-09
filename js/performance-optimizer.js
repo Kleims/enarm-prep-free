@@ -51,7 +51,7 @@ class PerformanceOptimizer {
         let allQuestions = [];
         let isLoading = false;
 
-        return {
+        const lazyLoader = {
             // Initialize with question data
             init: async (questions) => {
                 allQuestions = questions;
@@ -59,7 +59,7 @@ class PerformanceOptimizer {
                 currentChunk = 0;
                 
                 // Load first chunk immediately
-                await this.loadNextChunk();
+                await lazyLoader.loadNextChunk();
             },
 
             // Load next chunk of questions
@@ -108,7 +108,7 @@ class PerformanceOptimizer {
                 
                 // Check if we need to load more
                 if (end > loadedQuestions.length && currentChunk * CHUNK_SIZE < allQuestions.length) {
-                    this.loadNextChunk();
+                    lazyLoader.loadNextChunk();
                 }
                 
                 return loadedQuestions.slice(start, end);
@@ -156,6 +156,8 @@ class PerformanceOptimizer {
                 percentage: Math.round((loadedQuestions.length / allQuestions.length) * 100)
             })
         };
+        
+        return lazyLoader;
     }
 
     // DOM Batch Operations

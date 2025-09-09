@@ -73,18 +73,36 @@
         async initializeCoreServices() {
             console.log('📊 Initializing core services...');
 
-            // Data Integrity Manager
-            if (window.DataIntegrityManager) {
-                await window.DataIntegrityManager.initialize();
+            // Ensure ErrorHandler is globally available as static methods
+            if (window.ErrorHandler && !window.ErrorHandler.logError) {
+                // Create static methods for backward compatibility
+                const errorHandlerInstance = new window.ErrorHandler();
+                window.ErrorHandler.logError = errorHandlerInstance.logError.bind(errorHandlerInstance);
+                window.ErrorHandler.handleError = errorHandlerInstance.handleError.bind(errorHandlerInstance);
             }
 
-            // Validate stored data integrity
-            const integrityValid = window.DataIntegrityManager ? 
-                await window.DataIntegrityManager.validateStoredData() : true;
-            
-            if (!integrityValid) {
-                console.warn('⚠️ Data integrity issues detected - clearing corrupted data');
-                StorageService.clear();
+            // Data Integrity Manager (with safe error handling)
+            try {
+                if (window.DataIntegrityManager) {
+                    await window.DataIntegrityManager.initialize();
+                }
+            } catch (error) {
+                console.warn('⚠️ Data Integrity Manager failed to initialize:', error.message);
+            }
+
+            // Validate stored data integrity (with safe error handling)
+            try {
+                const integrityValid = window.DataIntegrityManager ? 
+                    await window.DataIntegrityManager.validateStoredData() : true;
+                
+                if (!integrityValid) {
+                    console.warn('⚠️ Data integrity issues detected - clearing corrupted data');
+                    if (window.StorageService && typeof window.StorageService.clear === 'function') {
+                        window.StorageService.clear();
+                    }
+                }
+            } catch (error) {
+                console.warn('⚠️ Data integrity validation failed:', error.message);
             }
         }
 

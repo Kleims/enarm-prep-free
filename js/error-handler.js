@@ -46,7 +46,12 @@ class ErrorHandler {
         const originalCatch = Promise.prototype.catch;
         Promise.prototype.catch = function(onRejected) {
             return originalCatch.call(this, (error) => {
-                ErrorHandler.getInstance().logError(error, 'promise-catch');
+                // Safe error logging that doesn't depend on StorageService
+                if (window.ErrorHandler && window.ErrorHandler.logError) {
+                    window.ErrorHandler.logError(error, 'promise-catch');
+                } else {
+                    console.error('Promise rejection:', error);
+                }
                 if (onRejected) {
                     return onRejected(error);
                 }
@@ -195,8 +200,10 @@ class ErrorHandler {
 
     persistErrors() {
         try {
-            const recentErrors = this.errors.slice(0, 20); // Only store recent errors
-            StorageService.setItem('app-errors', recentErrors);
+            if (window.StorageService && typeof window.StorageService.setItem === 'function') {
+                const recentErrors = this.errors.slice(0, 20); // Only store recent errors
+                window.StorageService.setItem('app-errors', recentErrors);
+            }
         } catch (error) {
             console.warn('Could not persist errors to storage');
         }
@@ -204,8 +211,10 @@ class ErrorHandler {
 
     loadPersistedErrors() {
         try {
-            const persistedErrors = StorageService.getItem('app-errors', []);
-            this.errors = [...persistedErrors, ...this.errors];
+            if (window.StorageService && typeof window.StorageService.getItem === 'function') {
+                const persistedErrors = window.StorageService.getItem('app-errors', []);
+                this.errors = [...persistedErrors, ...this.errors];
+            }
         } catch (error) {
             console.warn('Could not load persisted errors');
         }
@@ -221,7 +230,10 @@ class ErrorHandler {
     }
 
     queueErrorForSending(errorEntry) {
-        const errorQueue = StorageService.getItem('error-queue', []);
+        if (!window.StorageService || typeof window.StorageService.getItem !== 'function') {
+            return; // Skip if StorageService not available
+        }
+        const errorQueue = window.StorageService.getItem('error-queue', []);
         errorQueue.push(errorEntry);
         
         // Limit queue size
@@ -229,21 +241,27 @@ class ErrorHandler {
             errorQueue.shift();
         }
         
-        StorageService.setItem('error-queue', errorQueue);
+        window.StorageService.setItem('error-queue', errorQueue);
         
         // Try to send queued errors
         this.sendQueuedErrors();
     }
 
     async sendQueuedErrors() {
-        const errorQueue = StorageService.getItem('error-queue', []);
+        if (!window.StorageService || typeof window.StorageService.getItem !== 'function') {
+            return;
+        }
+        
+        const errorQueue = window.StorageService.getItem('error-queue', []);
         if (errorQueue.length === 0) return;
 
         try {
             // Implement actual sending logic here
             // For now, just clear the queue after a delay
             setTimeout(() => {
-                StorageService.setItem('error-queue', []);
+                if (window.StorageService && typeof window.StorageService.setItem === 'function') {
+                    window.StorageService.setItem('error-queue', []);
+                }
             }, 5000);
         } catch (error) {
             console.warn('Could not send queued errors');
