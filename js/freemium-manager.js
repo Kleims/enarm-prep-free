@@ -5,11 +5,11 @@ class FreemiumManager {
     }
 
     loadDailyUsage() {
-        if (typeof StorageService === 'undefined') {
+        if (!window.StorageService || !window.StorageService.getItem) {
             return { date: new Date().toDateString(), examsCompleted: 0, questionsAnswered: 0 };
         }
         
-        const stored = StorageService.getItem(AppConstants.STORAGE_KEYS.DAILY_USAGE);
+        const stored = window.StorageService.getItem(AppConstants.STORAGE_KEYS.DAILY_USAGE);
         const today = new Date().toDateString();
         
         if (!stored || stored.date !== today) {
@@ -18,7 +18,7 @@ class FreemiumManager {
                 examsCompleted: 0,
                 questionsAnswered: 0
             };
-            StorageService.setItem(AppConstants.STORAGE_KEYS.DAILY_USAGE, newUsage);
+            window.StorageService.setItem(AppConstants.STORAGE_KEYS.DAILY_USAGE, newUsage);
             return newUsage;
         }
         
@@ -30,7 +30,7 @@ class FreemiumManager {
             return { isPremium: false, expiryDate: null, licenseKey: null };
         }
         
-        return StorageService.getItem(AppConstants.STORAGE_KEYS.PREMIUM_STATUS) || {
+        return window.StorageService?.getItem(AppConstants.STORAGE_KEYS.PREMIUM_STATUS) || {
             isPremium: false,
             expiryDate: null,
             licenseKey: null
@@ -56,15 +56,15 @@ class FreemiumManager {
 
     incrementExamCount() {
         this.dailyUsage.examsCompleted++;
-        if (typeof StorageService !== 'undefined') {
-            StorageService.setItem(AppConstants.STORAGE_KEYS.DAILY_USAGE, this.dailyUsage);
+        if (window.StorageService && window.StorageService.setItem) {
+            window.StorageService.setItem(AppConstants.STORAGE_KEYS.DAILY_USAGE, this.dailyUsage);
         }
     }
 
     incrementQuestionCount() {
         this.dailyUsage.questionsAnswered++;
-        if (typeof StorageService !== 'undefined') {
-            StorageService.setItem(AppConstants.STORAGE_KEYS.DAILY_USAGE, this.dailyUsage);
+        if (window.StorageService && window.StorageService.setItem) {
+            window.StorageService.setItem(AppConstants.STORAGE_KEYS.DAILY_USAGE, this.dailyUsage);
         }
     }
 

@@ -120,7 +120,7 @@ class PracticeModeController {
 
             return result;
         } catch (error) {
-            ErrorHandler.logError(error, 'PracticeModeController.startExamSimulation');
+            window.ErrorHandler?.logError(error, 'PracticeModeController.startExamSimulation');
             return { success: false, error: error.message };
         }
     }
@@ -160,7 +160,7 @@ class PracticeModeController {
 
             return result;
         } catch (error) {
-            ErrorHandler.logError(error, 'PracticeModeController.startTimedPractice');
+            window.ErrorHandler?.logError(error, 'PracticeModeController.startTimedPractice');
             return { success: false, error: error.message };
         }
     }
@@ -189,7 +189,7 @@ class PracticeModeController {
 
             return result;
         } catch (error) {
-            ErrorHandler.logError(error, 'PracticeModeController.startStudyMode');
+            window.ErrorHandler?.logError(error, 'PracticeModeController.startStudyMode');
             return { success: false, error: error.message };
         }
     }
@@ -237,7 +237,7 @@ class PracticeModeController {
 
             return result;
         } catch (error) {
-            ErrorHandler.logError(error, 'PracticeModeController.startReviewMode');
+            window.ErrorHandler?.logError(error, 'PracticeModeController.startReviewMode');
             return { success: false, error: error.message };
         }
     }
@@ -256,7 +256,7 @@ class PracticeModeController {
 
             return result;
         } catch (error) {
-            ErrorHandler.logError(error, 'PracticeModeController.startRandomQuestion');
+            window.ErrorHandler?.logError(error, 'PracticeModeController.startRandomQuestion');
             return { success: false, error: error.message };
         }
     }
@@ -472,7 +472,7 @@ class PracticeModeController {
             try {
                 callback({ event, data });
             } catch (error) {
-                ErrorHandler.logError(error, `PracticeModeController.${event}Listener`);
+                window.ErrorHandler?.logError(error, `PracticeModeController.${event}Listener`);
             }
         });
     }

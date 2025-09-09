@@ -251,16 +251,22 @@ class ErrorHandler {
     }
 
     getCurrentUserId() {
-        return StorageService.getItem('user-id', 'anonymous');
+        if (window.StorageService && window.StorageService.getItem) {
+            return window.StorageService.getItem('user-id', 'anonymous');
+        }
+        return 'anonymous';
     }
 
     getSessionId() {
-        let sessionId = StorageService.getSessionItem('session-id');
-        if (!sessionId) {
-            sessionId = CommonUtils.generateId('session_');
-            StorageService.setSessionItem('session-id', sessionId);
+        if (window.StorageService && window.StorageService.getSessionItem) {
+            let sessionId = window.StorageService.getSessionItem('session-id');
+            if (!sessionId) {
+                sessionId = window.CommonUtils ? window.CommonUtils.generateId('session_') : 'session_' + Date.now();
+                window.StorageService.setSessionItem('session-id', sessionId);
+            }
+            return sessionId;
         }
-        return sessionId;
+        return 'session_' + Date.now();
     }
 
     isDevelopment() {

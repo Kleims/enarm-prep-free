@@ -3,7 +3,7 @@ class ThemeManager {
     constructor() {
         this.currentTheme = AppConstants.THEMES.LIGHT;
         this.listeners = [];
-        this.init();
+        // Don't initialize immediately - wait for dependencies
     }
 
     init() {
@@ -12,11 +12,17 @@ class ThemeManager {
     }
 
     loadTheme() {
-        const savedTheme = StorageService.getItem(
-            AppConstants.STORAGE_KEYS.THEME, 
-            AppConstants.THEMES.LIGHT
-        );
-        this.setTheme(savedTheme);
+        // Check if StorageService is available
+        if (window.StorageService && window.StorageService.getItem) {
+            const savedTheme = window.StorageService.getItem(
+                AppConstants.STORAGE_KEYS.THEME, 
+                AppConstants.THEMES.LIGHT
+            );
+            this.setTheme(savedTheme);
+        } else {
+            // Fallback to default theme if StorageService not ready
+            this.setTheme(AppConstants.THEMES.LIGHT);
+        }
     }
 
     setTheme(theme) {
@@ -27,7 +33,11 @@ class ThemeManager {
 
         this.currentTheme = theme;
         document.documentElement.setAttribute('data-theme', theme);
-        StorageService.setItem(AppConstants.STORAGE_KEYS.THEME, theme);
+        
+        // Save to storage if available
+        if (window.StorageService && window.StorageService.setItem) {
+            window.StorageService.setItem(AppConstants.STORAGE_KEYS.THEME, theme);
+        }
 
         this.updateThemeToggleIcon(theme);
         this.notifyListeners(theme);
@@ -245,6 +255,15 @@ class ThemeManager {
 
 // Create singleton instance
 const themeManager = new ThemeManager();
+
+// Initialize after dependencies are loaded
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        themeManager.init();
+    });
+} else {
+    themeManager.init();
+}
 
 // Export as global
 window.ThemeManager = themeManager;

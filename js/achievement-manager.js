@@ -4,7 +4,7 @@ class AchievementManager {
         this.achievements = new Map();
         this.userAchievements = [];
         this.listeners = [];
-        this.init();
+        // Don't initialize immediately - wait for dependencies
     }
 
     init() {
@@ -377,11 +377,11 @@ class AchievementManager {
 
     // Storage Management
     loadUserAchievements() {
-        this.userAchievements = StorageService.getItem('user-achievements', []);
+        this.userAchievements = window.StorageService?.getItem('user-achievements', []) || [];
     }
 
     saveUserAchievements() {
-        StorageService.setItem('user-achievements', this.userAchievements);
+        window.StorageService?.setItem('user-achievements', this.userAchievements);
     }
 
     // Notifications
@@ -647,6 +647,15 @@ document.head.appendChild(achievementStyleSheet);
 
 // Create singleton instance
 const achievementManager = new AchievementManager();
+
+// Initialize after dependencies are loaded
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        achievementManager.init();
+    });
+} else {
+    achievementManager.init();
+}
 
 // Export as global
 window.AchievementManager = achievementManager;
