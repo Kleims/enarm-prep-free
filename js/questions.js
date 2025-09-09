@@ -2,19 +2,36 @@
 class QuestionManager {
     constructor() {
         this.questions = [];
+        this.questionLoader = null;
+        this.isInitialized = false;
         this.init();
     }
 
     async init() {
         await this.loadQuestions();
-        window.questionBank = this.questions;
+        this.setupLazyLoader();
+        // Only expose loaded questions initially
+        window.questionBank = this.getLoadedQuestions();
+        this.isInitialized = true;
     }
 
     async loadQuestions() {
         try {
             const response = await fetch('data/questions.json');
             if (response.ok) {
-                this.questions = await response.json();
+                const allQuestions = await response.json();
+                
+                // Validate questions if validator is available
+                if (window.DataValidator) {
+                    const validation = window.DataValidator.validateQuestionBank(allQuestions);
+                    this.questions = validation.valid;
+                    
+                    if (validation.invalid.length > 0) {
+                        console.warn(`Skipped ${validation.invalid.length} invalid questions`);
+                    }
+                } else {
+                    this.questions = allQuestions;
+                }
             } else {
                 // Fallback to hardcoded questions if JSON file doesn't exist
                 this.questions = this.getDefaultQuestions();
@@ -23,6 +40,78 @@ class QuestionManager {
             console.log('Loading fallback questions');
             this.questions = this.getDefaultQuestions();
         }
+    }
+
+    setupLazyLoader() {
+        if (window.PerformanceOptimizer) {
+            this.questionLoader = window.PerformanceOptimizer.createQuestionLoader();
+            this.questionLoader.init(this.questions);
+        } else {
+            // Fallback to loading all questions if optimizer not available
+            console.warn('PerformanceOptimizer not available, loading all questions');
+        }
+    }
+
+    getLoadedQuestions() {
+        if (this.questionLoader) {
+            return this.questionLoader.getLoadedQuestions();
+        }
+        return this.questions;
+    }
+
+    async ensureQuestionsLoaded(count = 50) {
+        if (!this.questionLoader) return this.questions;
+        
+        const loaded = this.questionLoader.getLoadedQuestions();
+        
+        // Load more chunks if needed
+        while (loaded.length < count && loaded.length < this.questions.length) {
+            const hasMore = await this.questionLoader.loadNextChunk();
+            if (!hasMore) break;
+        }
+        
+        // Update global question bank
+        window.questionBank = this.getLoadedQuestions();
+        
+        return this.getLoadedQuestions();
+    }
+
+    searchQuestions(query, filters = {}) {
+        if (this.questionLoader) {
+            return this.questionLoader.searchQuestions(query, filters);
+        }
+        
+        // Fallback search implementation
+        const searchTerm = query.toLowerCase();
+        return this.questions.filter(q => {
+            const matchesText = !query || 
+                q.question.toLowerCase().includes(searchTerm);
+            const matchesCategory = !filters.category || 
+                q.category === filters.category;
+            const matchesDifficulty = !filters.difficulty || 
+                q.difficulty === filters.difficulty;
+            
+            return matchesText && matchesCategory && matchesDifficulty;
+        });
+    }
+
+    getQuestionsByCategory(category) {
+        return this.searchQuestions('', { category });
+    }
+
+    getQuestionsByDifficulty(difficulty) {
+        return this.searchQuestions('', { difficulty });
+    }
+
+    getLoadingProgress() {
+        if (this.questionLoader) {
+            return this.questionLoader.getProgress();
+        }
+        return {
+            loaded: this.questions.length,
+            total: this.questions.length,
+            percentage: 100
+        };
     }
 
     getDefaultQuestions() {
@@ -37,8 +126,7 @@ class QuestionManager {
                     A: "Diuréticos tiazídicos",
                     B: "IECA (Inhibidores de la ECA)",
                     C: "Bloqueadores de canales de calcio",
-                    D: "Beta bloqueadores",
-                    E: "Antagonistas de receptores de angiotensina"
+                    D: "Beta bloqueadores"
                 },
                 correct: "B",
                 explanation: "Los IECA son primera línea en pacientes jóvenes por su perfil de seguridad, efectividad y beneficios cardiovasculares adicionales.",
@@ -53,8 +141,7 @@ class QuestionManager {
                     A: "Infarto anterior",
                     B: "Infarto lateral",
                     C: "Infarto inferior",
-                    D: "Infarto posterior",
-                    E: "Pericarditis aguda"
+                    D: "Pericarditis aguda"
                 },
                 correct: "C",
                 explanation: "La elevación del ST en derivaciones II, III y aVF indica un infarto de miocardio de pared inferior, generalmente por oclusión de la arteria coronaria derecha.",
@@ -69,8 +156,7 @@ class QuestionManager {
                     A: "< 100 mmHg",
                     B: "< 120 mmHg",
                     C: "< 130 mmHg",
-                    D: "< 140 mmHg",
-                    E: "< 150 mmHg"
+                    D: "< 140 mmHg"
                 },
                 correct: "B",
                 explanation: "La presión arterial sistólica normal debe ser menor a 120 mmHg según las guías actuales.",

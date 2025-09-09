@@ -32,8 +32,21 @@ class SessionManager {
     }
 
     // Session Lifecycle
-    startSession(questions = null) {
+    async startSession(questions = null) {
         try {
+            // Ensure questions are loaded if using QuestionManager
+            if (!questions && window.QuestionManager) {
+                await window.QuestionManager.ensureQuestionsLoaded(this.sessionConfig.questionsCount);
+            }
+
+            // Validate session configuration
+            if (window.DataValidator) {
+                const validation = window.DataValidator.validateSessionConfig(this.sessionConfig);
+                if (!validation.valid) {
+                    throw new Error(`Invalid session config: ${validation.errors.join(', ')}`);
+                }
+            }
+
             this.currentSession = {
                 id: CommonUtils.generateId('session_'),
                 startTime: new Date().toISOString(),
@@ -43,11 +56,34 @@ class SessionManager {
                 status: 'active'
             };
 
+            // Validate questions before starting
+            if (window.DataValidator) {
+                const validQuestions = [];
+                this.currentSession.questions.forEach(q => {
+                    const result = window.DataValidator.validateQuestion(q);
+                    if (result.valid) {
+                        validQuestions.push(result.data);
+                    }
+                });
+                this.currentSession.questions = validQuestions;
+            }
+
             this.sessionQuestions = CommonUtils.shuffleArray(this.currentSession.questions)
                 .slice(0, this.sessionConfig.questionsCount);
             
             this.sessionResults = [];
             this.currentQuestionIndex = 0;
+
+            // Optimize session storage
+            if (window.PerformanceOptimizer) {
+                const optimized = window.PerformanceOptimizer.optimizeSessionStorage(
+                    this.currentSession,
+                    'current-session'
+                );
+                if (optimized) {
+                    StorageService.setSessionItem('current-session', optimized);
+                }
+            }
 
             this.notifyListeners('sessionStart', {
                 session: this.currentSession,

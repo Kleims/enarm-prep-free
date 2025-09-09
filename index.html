@@ -7,6 +7,34 @@
     <meta name="description" content="Plataforma completa de preparación para el ENARM con bancos de preguntas, guías de estudio y seguimiento de progreso.">
     <meta name="keywords" content="ENARM, examen médico, residencia médica, preparación médica, preguntas médicas">
     
+    <!-- Security Headers -->
+    <meta http-equiv="Content-Security-Policy" 
+          content="default-src 'self';
+                   script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net;
+                   style-src 'self' 'unsafe-inline';
+                   img-src 'self' data: blob:;
+                   font-src 'self' data:;
+                   connect-src 'self';
+                   media-src 'self';
+                   object-src 'none';
+                   base-uri 'self';
+                   form-action 'self';
+                   upgrade-insecure-requests;">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2c5aa0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="ENARM Prep">
+    <link rel="apple-touch-icon" href="assets/icons/icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/icon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/icon-16x16.png">
+    
     <!-- Open Graph Tags -->
     <meta property="og:title" content="ENARM Prep - Preparación para Residencias Médicas">
     <meta property="og:description" content="La mejor plataforma para preparar tu ENARM con miles de preguntas y herramientas de estudio.">
@@ -22,7 +50,10 @@
     <link rel="stylesheet" href="css/freemium.css">
     
     <!-- Chart.js for progress visualization -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js" 
+            integrity="sha384-9MhbyIRcBVQiiC7FSd7T38oJNj2Zh+EfxS7/vjhBi4OOT78NlHSnzM31EZRWR1LZ" 
+            crossorigin="anonymous"
+            onerror="this.onerror=null; this.src='js/vendor/chart.min.js';"></script>
 </head>
 <body>
     <!-- Navigation -->
@@ -564,8 +595,17 @@
     <!-- Core modules -->
     <script src="js/constants.js"></script>
     <script src="js/error-handler.js"></script>
-    <script src="js/storage-service.js"></script>
     <script src="js/common-utils.js"></script>
+    
+    <!-- Security & Performance modules (load early) -->
+    <script src="js/dependency-manager.js"></script>
+    <script src="js/data-integrity.js"></script>
+    <script src="js/dom-sanitizer.js"></script>
+    <script src="js/data-validator.js"></script>
+    <script src="js/performance-optimizer.js"></script>
+    
+    <!-- Storage module (depends on validator) -->
+    <script src="js/storage-service.js"></script>
     
     <!-- Service modules -->
     <script src="js/theme-manager.js"></script>
@@ -590,5 +630,35 @@
     <script src="js/progress.js"></script>
     <script src="js/utils.js"></script>
     <script src="js/app.js"></script>
+    
+    <!-- Application Initializer (replaces direct initialization) -->
+    <script src="js/app-initializer.js"></script>
+    
+    <!-- Development and Enhancement modules (conditional loading) -->
+    <script>
+        // Load development tools only in development environment
+        if (window.location.hostname === 'localhost' || 
+            window.location.hostname === '127.0.0.1' || 
+            window.location.search.includes('dev=true')) {
+            
+            const devModules = [
+                'js/test-runner.js',
+                'js/monitoring-dashboard.js'
+            ];
+            
+            devModules.forEach(module => {
+                const script = document.createElement('script');
+                script.src = module;
+                script.async = true;
+                document.head.appendChild(script);
+            });
+        }
+        
+        // Always load progressive enhancement
+        const enhancementScript = document.createElement('script');
+        enhancementScript.src = 'js/progressive-enhancement.js';
+        enhancementScript.async = false; // Load synchronously for critical functionality
+        document.head.appendChild(enhancementScript);
+    </script>
 </body>
 </html>

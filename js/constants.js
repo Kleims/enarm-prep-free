@@ -24,7 +24,7 @@ class AppConstants {
 
     static get QUESTION() {
         return {
-            OPTIONS: ['A', 'B', 'C', 'D', 'E'],
+            OPTIONS: ['A', 'B', 'C', 'D'], // ENARM uses only A-D options
             DIFFICULTIES: ['basico', 'intermedio', 'avanzado'],
             DEFAULT_SESSION_SIZE: 10,
             MAX_OPTION_LENGTH: 100,

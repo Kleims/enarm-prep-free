@@ -141,27 +141,68 @@ class QuestionDisplayController {
 
     updateQuestionContent(question) {
         if (this.elements.questionText) {
-            this.elements.questionText.textContent = question.question;
+            // Use safe text setting to prevent XSS
+            if (window.DataValidator) {
+                this.elements.questionText.textContent = window.DataValidator.sanitizeText(question.question);
+            } else {
+                this.elements.questionText.textContent = question.question;
+            }
         }
     }
 
     updateQuestionOptions(question) {
         if (!this.elements.questionOptions) return;
         
-        this.elements.questionOptions.innerHTML = '';
+        // Use performance optimizer for batch DOM updates
+        if (window.PerformanceOptimizer) {
+            window.PerformanceOptimizer.batchDOM(() => {
+                this.renderQuestionOptions(question);
+            });
+        } else {
+            this.renderQuestionOptions(question);
+        }
+    }
+
+    renderQuestionOptions(question) {
+        // Clear existing options safely
+        while (this.elements.questionOptions.firstChild) {
+            this.elements.questionOptions.removeChild(this.elements.questionOptions.firstChild);
+        }
+        
+        // Create document fragment for better performance
+        const fragment = document.createDocumentFragment();
         
         Object.entries(question.options).forEach(([letter, text]) => {
             const label = document.createElement('label');
             label.className = 'option-label';
             
-            label.innerHTML = `
-                <input type="radio" name="answer" value="${letter}">
-                <span class="option-letter">${letter})</span>
-                <span class="option-text">${text}</span>
-            `;
+            // Create elements safely without innerHTML
+            const input = document.createElement('input');
+            input.type = 'radio';
+            input.name = 'answer';
+            input.value = letter;
             
-            this.elements.questionOptions.appendChild(label);
+            const letterSpan = document.createElement('span');
+            letterSpan.className = 'option-letter';
+            letterSpan.textContent = `${letter})`;
+            
+            const textSpan = document.createElement('span');
+            textSpan.className = 'option-text';
+            // Sanitize option text
+            if (window.DataValidator) {
+                textSpan.textContent = window.DataValidator.sanitizeText(text);
+            } else {
+                textSpan.textContent = text;
+            }
+            
+            label.appendChild(input);
+            label.appendChild(letterSpan);
+            label.appendChild(textSpan);
+            
+            fragment.appendChild(label);
         });
+        
+        this.elements.questionOptions.appendChild(fragment);
     }
 
     // Answer Handling

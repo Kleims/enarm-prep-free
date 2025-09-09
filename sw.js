@@ -1,7 +1,9 @@
-// ENARM Prep - Service Worker for Offline Functionality
-const CACHE_NAME = 'enarm-prep-v1.1.0';
-const STATIC_CACHE_NAME = 'enarm-prep-static-v1.1.0';
-const DYNAMIC_CACHE_NAME = 'enarm-prep-dynamic-v1.1.0';
+// ENARM Prep - Enhanced Service Worker for Offline Functionality
+const CACHE_VERSION = '2.0.0';
+const CACHE_NAME = `enarm-prep-v${CACHE_VERSION}`;
+const STATIC_CACHE_NAME = `enarm-prep-static-v${CACHE_VERSION}`;
+const DYNAMIC_CACHE_NAME = `enarm-prep-dynamic-v${CACHE_VERSION}`;
+const QUESTIONS_CACHE_NAME = `enarm-prep-questions-v${CACHE_VERSION}`;
 
 // Resources to cache immediately
 const STATIC_ASSETS = [
@@ -9,17 +11,36 @@ const STATIC_ASSETS = [
   './index.html',
   './css/main.css',
   './css/responsive.css',
+  './css/freemium.css',
   './js/constants.js',
   './js/error-handler.js',
-  './js/storage-service.js',
   './js/common-utils.js',
+  './js/dependency-manager.js', // NEW - Dependency management
+  './js/data-integrity.js', // NEW - Data integrity security
+  './js/dom-sanitizer.js', // NEW - XSS prevention
+  './js/data-validator.js', // NEW - Security module
+  './js/performance-optimizer.js', // NEW - Performance module
+  './js/storage-service.js',
   './js/theme-manager.js',
   './js/navigation-manager.js',
-  './js/app.js',
+  './js/timer-service.js',
+  './js/session-manager.js',
+  './js/freemium-manager.js',
+  './js/practice-mode-controller.js',
+  './js/question-display-controller.js',
+  './js/achievement-manager.js',
+  './js/chart-service.js',
+  './js/analytics-calculator.js',
+  './js/question-filter-service.js',
+  './js/performance-manager.js',
   './js/questions.js',
   './js/progress.js',
   './js/utils.js',
-  './data/questions.json',
+  './js/app.js',
+  './js/app-initializer.js', // NEW - Safe application initialization
+  './js/test-runner.js', // NEW - Testing module
+  './js/monitoring-dashboard.js', // NEW - Monitoring module
+  './js/progressive-enhancement.js', // NEW - Enhancement module
   'https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js'
 ];
 
@@ -36,8 +57,10 @@ const NETWORK_ONLY = [
   'chrome-extension://'
 ];
 
-// Maximum number of dynamic cache entries
-const MAX_CACHE_SIZE = 50;
+// Cache size limits for different types
+const MAX_DYNAMIC_CACHE_SIZE = 50;
+const MAX_QUESTIONS_CACHE_SIZE = 10; // Different question sets
+const CACHE_EXPIRY_DAYS = 7; // Days before cache expires
 
 // Install Event - Cache static assets
 self.addEventListener('install', (event) => {
@@ -105,6 +128,9 @@ self.addEventListener('fetch', (event) => {
   if (shouldSkipCache(event.request.url)) {
     // Network only for certain resources
     event.respondWith(fetch(event.request));
+  } else if (isQuestionRequest(event.request.url)) {
+    // Smart caching for questions with validation
+    event.respondWith(smartQuestionCache(event.request));
   } else if (isStaticAsset(event.request.url)) {
     // Cache first for static assets
     event.respondWith(cacheFirst(event.request));
@@ -144,7 +170,7 @@ async function networkFirst(request) {
       const cache = await caches.open(DYNAMIC_CACHE_NAME);
       
       // Limit cache size
-      await limitCacheSize(DYNAMIC_CACHE_NAME, MAX_CACHE_SIZE);
+      await limitCacheSize(DYNAMIC_CACHE_NAME, MAX_DYNAMIC_CACHE_SIZE);
       
       cache.put(request, networkResponse.clone());
     }
@@ -175,13 +201,111 @@ async function staleWhileRevalidate(request) {
   return cachedResponse || fetchPromise;
 }
 
+// Smart Question Caching Strategy
+async function smartQuestionCache(request) {
+  try {
+    const cache = await caches.open(QUESTIONS_CACHE_NAME);
+    const cached = await cache.match(request);
+    
+    // Check if cached version is still fresh
+    if (cached) {
+      const cacheDate = cached.headers.get('sw-cached-date');
+      if (cacheDate) {
+        const cachedTime = new Date(cacheDate).getTime();
+        const now = Date.now();
+        const daysSinceCached = (now - cachedTime) / (1000 * 60 * 60 * 24);
+        
+        if (daysSinceCached < CACHE_EXPIRY_DAYS) {
+          console.log('Service Worker: Returning fresh cached questions');
+          return cached;
+        }
+      }
+    }
+    
+    // Fetch fresh questions and validate
+    console.log('Service Worker: Fetching fresh questions');
+    const networkResponse = await fetch(request);
+    
+    if (networkResponse && networkResponse.status === 200) {
+      const responseText = await networkResponse.text();
+      
+      // Basic validation - ensure it's valid JSON
+      try {
+        const questions = JSON.parse(responseText);
+        
+        if (Array.isArray(questions) && questions.length > 0) {
+          // Create enhanced response with timestamp
+          const enhancedResponse = new Response(responseText, {
+            headers: {
+              ...networkResponse.headers,
+              'sw-cached-date': new Date().toISOString(),
+              'sw-validated': 'true'
+            }
+          });
+          
+          // Cache the validated questions
+          await limitCacheSize(QUESTIONS_CACHE_NAME, MAX_QUESTIONS_CACHE_SIZE);
+          cache.put(request, enhancedResponse.clone());
+          
+          return enhancedResponse;
+        } else {
+          throw new Error('Invalid questions format');
+        }
+      } catch (parseError) {
+        console.error('Service Worker: Invalid questions data, using cache fallback');
+        return cached || createOfflineFallback();
+      }
+    }
+    
+    return cached || createOfflineFallback();
+  } catch (error) {
+    console.error('Service Worker: Question cache failed:', error);
+    const cache = await caches.open(QUESTIONS_CACHE_NAME);
+    const cached = await cache.match(request);
+    return cached || createOfflineFallback();
+  }
+}
+
+function createOfflineFallback() {
+  const fallbackQuestions = [
+    {
+      id: 'offline_fallback_1',
+      category: 'Medicina General',
+      difficulty: 'basico',
+      question: '¿Cuál es la frecuencia cardíaca normal en reposo para un adulto sano?',
+      options: {
+        A: '40-60 lpm',
+        B: '60-100 lpm',
+        C: '100-120 lpm',
+        D: '120-140 lpm'
+      },
+      correct: 'B',
+      explanation: 'La frecuencia cardíaca normal en reposo para adultos es de 60-100 latidos por minuto.',
+      reference: 'Guías básicas de fisiología cardiovascular'
+    }
+  ];
+  
+  return new Response(JSON.stringify(fallbackQuestions), {
+    headers: {
+      'Content-Type': 'application/json',
+      'sw-fallback': 'true'
+    }
+  });
+}
+
 // Helper Functions
+function isQuestionRequest(url) {
+  return url.includes('questions.json') || url.includes('/data/');
+}
+
 function isStaticAsset(url) {
-  return STATIC_ASSETS.some(asset => url.includes(asset.replace('/enarm-prep', ''))) ||
-         url.includes('.css') || 
-         url.includes('.js') || 
-         url.includes('.json') ||
-         url.includes('chart.js');
+  return STATIC_ASSETS.some(asset => {
+    const normalizedAsset = asset.replace('./', '').replace('/enarm-prep/', '');
+    return url.includes(normalizedAsset);
+  }) ||
+  url.includes('.css') || 
+  url.includes('.js') ||
+  url.includes('chart.js');
 }
 
 function isDynamicAsset(url) {

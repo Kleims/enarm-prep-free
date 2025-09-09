@@ -24,6 +24,31 @@ class StorageService {
         }
 
         try {
+            // Validate data before storing
+            if (window.DataValidator) {
+                const validation = window.DataValidator.validateStorageData(key, value);
+                if (!validation.valid) {
+                    console.error(`Storage validation failed for ${key}:`, validation.errors);
+                    
+                    // Try to optimize if it's a size issue
+                    if (validation.errors[0].includes('size exceeds')) {
+                        if (window.PerformanceOptimizer) {
+                            const optimized = window.PerformanceOptimizer.optimizeSessionStorage(value, key);
+                            if (optimized) {
+                                value = optimized;
+                            } else {
+                                return false;
+                            }
+                        }
+                    } else {
+                        return false;
+                    }
+                }
+                
+                // Sanitize data
+                value = window.DataValidator.sanitizeForStorage(value);
+            }
+
             const data = {
                 value,
                 timestamp: Date.now(),
@@ -31,13 +56,66 @@ class StorageService {
             };
 
             const serialized = JSON.stringify(data);
-            localStorage.setItem(key, serialized);
+            
+            // Check for quota exceeded error
+            try {
+                localStorage.setItem(key, serialized);
+            } catch (quotaError) {
+                if (quotaError.name === 'QuotaExceededError') {
+                    // Try to free up space
+                    this.handleQuotaExceeded(key);
+                    
+                    // Retry once
+                    localStorage.setItem(key, serialized);
+                } else {
+                    throw quotaError;
+                }
+            }
             
             this.notifyListeners(key, value, 'set');
             return true;
         } catch (error) {
             console.error(`Error setting item ${key}:`, error);
+            
+            // Log to error handler if available
+            if (window.ErrorHandler) {
+                window.ErrorHandler.logError(error, `StorageService.setItem(${key})`);
+            }
+            
             return false;
+        }
+    }
+
+    handleQuotaExceeded(priorityKey) {
+        console.warn('Storage quota exceeded, cleaning up old data...');
+        
+        // Priority order for cleanup (least important first)
+        const cleanupOrder = [
+            'app-errors',
+            'error-queue', 
+            'enarm-sessions',
+            'enarm-daily-usage'
+        ];
+        
+        for (const key of cleanupOrder) {
+            if (key !== priorityKey) {
+                try {
+                    const data = this.getItem(key);
+                    if (Array.isArray(data) && data.length > 10) {
+                        // Keep only recent items
+                        this.setItem(key, data.slice(-10));
+                    } else {
+                        this.removeItem(key);
+                    }
+                } catch (e) {
+                    // Continue cleanup
+                }
+            }
+        }
+        
+        // Call performance optimizer cleanup if available
+        if (window.PerformanceOptimizer) {
+            window.PerformanceOptimizer.optimizeMemory();
         }
     }
 
