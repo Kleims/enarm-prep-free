@@ -425,8 +425,14 @@ class ErrorHandler {
 // Create singleton instance
 const errorHandler = ErrorHandler.getInstance();
 
-// Export as global
+// Export as global with both instance methods and static methods
 window.ErrorHandler = errorHandler;
+
+// Add static methods for backward compatibility
+window.ErrorHandler.logError = errorHandler.logError.bind(errorHandler);
+window.ErrorHandler.handleError = errorHandler.handleError.bind(errorHandler);
+window.ErrorHandler.getInstance = ErrorHandler.getInstance;
+window.ErrorHandler.prototype = ErrorHandler.prototype;
 
 // For module systems
 if (typeof module !== 'undefined' && module.exports) {

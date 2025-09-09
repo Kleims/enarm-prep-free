@@ -73,12 +73,20 @@
         async initializeCoreServices() {
             console.log('📊 Initializing core services...');
 
-            // Ensure ErrorHandler is globally available as static methods
-            if (window.ErrorHandler && !window.ErrorHandler.logError) {
-                // Create static methods for backward compatibility
-                const errorHandlerInstance = new window.ErrorHandler();
-                window.ErrorHandler.logError = errorHandlerInstance.logError.bind(errorHandlerInstance);
-                window.ErrorHandler.handleError = errorHandlerInstance.handleError.bind(errorHandlerInstance);
+            // Wait for ErrorHandler to be available (it sets up its own static methods)
+            let retries = 0;
+            while (!window.ErrorHandler?.logError && retries < 10) {
+                await new Promise(resolve => setTimeout(resolve, 100));
+                retries++;
+            }
+
+            if (!window.ErrorHandler?.logError) {
+                console.warn('⚠️ ErrorHandler not available after waiting - continuing without it');
+                // Create a minimal fallback
+                window.ErrorHandler = {
+                    logError: (error, context) => console.error(`[${context}]`, error),
+                    handleError: (error) => console.error('Error:', error)
+                };
             }
 
             // Data Integrity Manager (with safe error handling)
@@ -119,6 +127,7 @@
             }
 
             // Core services (no dependencies)
+            dm.register('AppConstants', () => window.AppConstants);
             dm.register('StorageService', () => window.StorageService);
             dm.register('ErrorHandler', () => window.ErrorHandler);
             dm.register('CommonUtils', () => window.CommonUtils);
@@ -126,8 +135,15 @@
 
             // Service layer (depends on core)
             dm.register('ThemeManager', () => {
-                return window.ThemeManager ? new window.ThemeManager() : null;
-            }, ['StorageService']);
+                if (window.ThemeManager) {
+                    const instance = new window.ThemeManager();
+                    if (instance.init) {
+                        instance.init();
+                    }
+                    return instance;
+                }
+                return null;
+            }, ['AppConstants', 'StorageService']);
 
             dm.register('NavigationManager', () => {
                 return window.NavigationManager ? new window.NavigationManager() : null;
