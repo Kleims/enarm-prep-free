@@ -34,14 +34,15 @@
             </div>
             
             <div class="nav-menu" id="nav-menu">
-                <a href="#home" class="nav-link active" data-page="home">
-                    Inicio
+                <h3></h3>
+                <a href="#home" class="nav-link active" data-page="home" data-section="1">
+                    Resumen Ejecutivo
                 </a>
-                <a href="#practice" class="nav-link" data-page="practice">
-                    Práctica
+                <a href="#practice" class="nav-link" data-page="practice" data-section="2">
+                    Metodología de Práctica
                 </a>
-                <a href="#progress" class="nav-link" data-page="progress">
-                    Progreso
+                <a href="#progress" class="nav-link" data-page="progress" data-section="3">
+                    Análisis de Resultados
                 </a>
             </div>
             
@@ -60,43 +61,54 @@
 
     <!-- Main Content -->
     <main class="main-content">
-        <!-- Home Page -->
+        <!-- Home Page - Resumen Ejecutivo -->
         <section id="home-page" class="page active">
-            <div class="hero-section">
-                <div class="container">
-                    <div class="hero-content">
-                        <h1 class="hero-title">Domina tu ENARM con Confianza</h1>
-                        <p class="hero-description">
-                            La plataforma más completa para preparar el Examen Nacional de Aspirantes a Residencias Médicas.
-                            Practica con preguntas especializadas, estudia con guías actualizadas y monitorea tu progreso.
-                        </p>
-                        <div class="hero-actions">
-                            <button class="btn btn-primary" data-action="start-practice">
-                                Comenzar Práctica
-                            </button>
-                            <button class="btn btn-secondary" data-action="view-progress">
-                                Ver Mi Progreso
-                            </button>
-                        </div>
-                        
-                        <!-- Daily Usage Stats -->
-                        <div class="daily-stats"></div>
-                    </div>
-                    
-                    <div class="hero-stats">
-                        <div class="stat-card">
-                            <div class="stat-number" id="total-questions">500+</div>
-                            <div class="stat-label">Preguntas</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-number">10</div>
-                            <div class="stat-label">Especialidades</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-number" id="user-progress">0%</div>
-                            <div class="stat-label">Tu Progreso</div>
-                        </div>
-                    </div>
+            <div class="paper-section">
+                <h1>Sistema Integrado de Preparación para el Examen Nacional de Aspirantes a Residencias Médicas (ENARM)</h1>
+                
+                <h2>Resumen</h2>
+                <p>
+                    Se presenta una plataforma digital diseñada para optimizar la preparación de aspirantes al Examen Nacional de Residencias Médicas. 
+                    El sistema incorpora metodologías basadas en evidencia científica para el aprendizaje médico continuo, proporcionando un entorno 
+                    de evaluación estandarizado que replica las condiciones del examen oficial.
+                </p>
+                
+                <h2>Objetivos</h2>
+                <p>
+                    El presente sistema tiene como objetivo principal mejorar el rendimiento académico de los aspirantes mediante la implementación 
+                    de técnicas de evaluación formativa y sumativa. Los objetivos específicos incluyen: (1) proporcionar acceso a un banco 
+                    de preguntas validadas, (2) implementar sistemas de seguimiento del progreso académico, y (3) ofrecer análisis estadístico 
+                    del desempeño individual.
+                </p>
+                
+                <div class="paper-actions">
+                    <button class="btn btn-primary" data-action="start-practice">
+                        Iniciar Metodología
+                    </button>
+                    <button class="btn btn-secondary" data-action="view-progress">
+                        Análisis de Datos
+                    </button>
+                </div>
+                
+                <!-- Daily Usage Stats -->
+                <div class="daily-stats"></div>
+                
+                <h2>Especificaciones Técnicas</h2>
+                <div class="specifications-table">
+                    <table>
+                        <tr>
+                            <td>Banco de Preguntas</td>
+                            <td id="total-questions">500+ ítems validados</td>
+                        </tr>
+                        <tr>
+                            <td>Especialidades Cubiertas</td>
+                            <td>10 áreas médicas</td>
+                        </tr>
+                        <tr>
+                            <td>Progreso Actual</td>
+                            <td><span id="user-progress">0%</span> completado</td>
+                        </tr>
+                    </table>
                 </div>
             </div>
 
@@ -208,20 +220,27 @@
             </section>
         </section>
 
-        <!-- Practice Page -->
+        <!-- Practice Page - Metodología -->
         <section id="practice-page" class="page">
-            <div class="container">
-                <div class="page-header">
-                    <h1>Banco de Preguntas</h1>
-                    <p>Practica con preguntas reales del estilo ENARM</p>
-                </div>
+            <div class="paper-section">
+                <h1>Metodología de Evaluación Clínica</h1>
+                
+                <h2>Marco Teórico</h2>
+                <p>
+                    La metodología implementada se basa en principios de evaluación formativa desarrollados específicamente 
+                    para el contexto del Examen Nacional de Residencias Médicas. El sistema utiliza un enfoque de aprendizaje 
+                    adaptativo que permite la personalización del contenido según el progreso individual del aspirante.
+                </p>
 
+                <h2>Parámetros de Estudio</h2>
+                <p>Configure los parámetros de evaluación según los objetivos de aprendizaje específicos:</p>
+                
                 <!-- Practice Controls -->
                 <div class="practice-controls">
                     <div class="control-group">
-                        <label for="specialty-filter">Especialidad:</label>
+                        <label for="specialty-filter">Área de Especialización:</label>
                         <select id="specialty-filter">
-                            <option value="">Todas las especialidades</option>
+                            <option value="">Todas las especialidades médicas</option>
                             <option value="medicina-interna">Medicina Interna</option>
                             <option value="cirugia-general">Cirugía General</option>
                             <option value="pediatria">Pediatría</option>
@@ -236,7 +255,7 @@
                     </div>
 
                     <div class="control-group">
-                        <label for="difficulty-filter">Dificultad:</label>
+                        <label for="difficulty-filter">Nivel de Complejidad:</label>
                         <select id="difficulty-filter">
                             <option value="">Todas las dificultades</option>
                             <option value="basico">Básico</option>
@@ -369,13 +388,17 @@
             </div>
         </section>
 
-        <!-- Progress Page -->
+        <!-- Progress Page - Análisis de Resultados -->
         <section id="progress-page" class="page">
-            <div class="container">
-                <div class="page-header">
-                    <h1>Mi Progreso</h1>
-                    <p>Seguimiento detallado de tu preparación para el ENARM</p>
-                </div>
+            <div class="paper-section">
+                <h1>Análisis Estadístico del Rendimiento Académico</h1>
+                
+                <h2>Introducción</h2>
+                <p>
+                    El presente análisis proporciona una evaluación cuantitativa del progreso académico basado en métricas 
+                    de desempeño estandarizadas. Los indicadores presentados permiten identificar áreas de oportunidad 
+                    y fortalezas en el proceso de preparación para el examen nacional.
+                </p>
 
                 <div class="progress-overview">
                     <div class="progress-card">

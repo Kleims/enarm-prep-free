@@ -35,8 +35,11 @@
   --spacing-xl: 2rem;
   --spacing-2xl: 3rem;
   
-  /* Typography - LaTeX Style */
+  /* Typography - Scientific Paper Style */
   --font-family: 'Times New Roman', Times, serif;
+  --paper-line-height: 1.6;
+  --paper-margin: 2.5cm;
+  --paper-font-size: 12pt;
   --font-size-xs: 0.75rem;
   --font-size-sm: 0.875rem;
   --font-size-base: 1rem;
@@ -85,10 +88,102 @@
   padding: 0;
 }
 
-/* LaTeX-style Typography */
+/* Scientific Paper Typography and Layout */
 body {
-  line-height: 1.6;
+  font-family: var(--font-family);
+  line-height: var(--paper-line-height);
   letter-spacing: 0.3px;
+  font-size: var(--paper-font-size);
+  max-width: 21cm; /* A4 width */
+  margin: 0 auto;
+  padding: var(--paper-margin);
+  background: white;
+  color: black;
+  counter-reset: section subsection;
+}
+
+/* Paper-style headings with automatic numbering */
+h1 {
+  font-size: 18pt;
+  font-weight: bold;
+  text-align: center;
+  margin: 2rem 0 1.5rem 0;
+  line-height: 1.2;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+h2 {
+  font-size: 14pt;
+  font-weight: bold;
+  margin: 1.5rem 0 1rem 0;
+  counter-increment: section;
+  counter-reset: subsection;
+}
+
+h2::before {
+  content: counter(section) ". ";
+}
+
+h3 {
+  font-size: 12pt;
+  font-weight: bold;
+  margin: 1rem 0 0.5rem 0;
+  counter-increment: subsection;
+}
+
+h3::before {
+  content: counter(section) "." counter(subsection) " ";
+}
+
+/* Paper-style paragraphs */
+p {
+  text-align: justify;
+  margin: 0.5rem 0;
+  text-indent: 1.5em;
+}
+
+/* First paragraph after heading - no indent */
+h1 + p, h2 + p, h3 + p {
+  text-indent: 0;
+}
+
+/* Paper sections */
+.paper-section {
+  margin: 2rem 0;
+}
+
+.paper-actions {
+  text-align: center;
+  margin: 2rem 0;
+}
+
+.paper-actions .btn {
+  margin: 0 1rem;
+  font-family: var(--font-family);
+}
+
+/* Academic tables */
+.specifications-table {
+  margin: 1rem 0;
+}
+
+.specifications-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-family);
+  margin: 1rem 0;
+}
+
+.specifications-table td {
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid var(--border-color);
+  vertical-align: top;
+}
+
+.specifications-table td:first-child {
+  font-weight: bold;
+  width: 40%;
 }
 
 html {
@@ -142,8 +237,7 @@ a:hover {
 
 .page {
   display: none;
-  min-height: calc(100vh - var(--navbar-height));
-  padding-top: var(--navbar-height);
+  margin-top: 2rem;
 }
 
 .page.active {
@@ -165,71 +259,88 @@ a:hover {
   color: var(--text-muted);
 }
 
-/* Navigation */
+/* Scientific Paper Navigation - Table of Contents Style */
 .navbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: var(--navbar-height);
+  position: static;
   background-color: var(--background-primary);
-  border-bottom: 1px solid var(--border-color);
-  z-index: 100;
-  transition: all var(--transition-normal);
+  border-bottom: 2px solid var(--text-primary);
+  margin-bottom: 2rem;
+  padding: 1rem 0;
 }
 
 .nav-container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 100%;
-  max-width: var(--container-max-width);
-  margin: 0 auto;
-  padding: 0 var(--spacing-lg);
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 .nav-logo h1 {
-  font-size: var(--font-size-xl);
-  color: var(--primary-color);
-  margin: 0;
+  font-size: 16pt;
+  color: var(--text-primary);
+  margin: 0 0 1rem 0;
+  text-align: center;
+  font-weight: bold;
+  letter-spacing: 2px;
 }
 
 .nav-subtitle {
-  font-size: var(--font-size-xs);
-  color: var(--text-muted);
+  font-size: 10pt;
+  color: var(--text-secondary);
+  text-align: center;
+  font-style: italic;
+  margin-bottom: 1.5rem;
 }
 
 .nav-menu {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-lg);
+  display: block;
+  margin: 1rem 0;
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+  padding: 1rem 0;
+}
+
+.nav-menu h3 {
+  font-size: 12pt;
+  font-weight: bold;
+  margin: 0 0 0.5rem 0;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  counter-increment: none;
+  counter-reset: none;
+}
+
+.nav-menu h3::before {
+  content: "Índice";
 }
 
 .nav-link {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-  padding: var(--spacing-sm) var(--spacing-md);
-  border-radius: var(--radius-lg);
-  font-weight: 500;
-  color: var(--text-secondary);
-  transition: all var(--transition-fast);
+  display: block;
+  padding: 0.3rem 2rem;
+  font-weight: normal;
+  color: var(--text-primary);
+  text-decoration: none;
+  border-bottom: 1px dotted var(--border-color);
+  position: relative;
+}
+
+.nav-link::after {
+  content: attr(data-section);
+  float: right;
+  font-weight: bold;
 }
 
 .nav-link:hover,
 .nav-link.active {
-  color: var(--primary-color);
+  color: var(--text-primary);
   background-color: var(--background-secondary);
-}
-
-.nav-icon {
-  font-size: var(--font-size-sm);
+  text-decoration: underline;
 }
 
 .nav-controls {
   display: flex;
-  align-items: center;
-  gap: var(--spacing-md);
+  justify-content: center;
+  margin-top: 1rem;
 }
 
 .theme-toggle {
