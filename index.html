@@ -62,42 +62,50 @@
     <main class="main-content">
         <!-- Home Page -->
         <section id="home-page" class="page active">
-            <div class="paper-section">
-                <h1>ENARM Prep - Preparación Médica Integral</h1>
-                
-                <p>
-                    Domina tu ENARM con confianza. La plataforma más completa para preparar el Examen Nacional de Aspirantes a Residencias Médicas.
-                    Practica con preguntas especializadas y monitorea tu progreso de manera efectiva.
-                </p>
-                
-                <div class="paper-actions">
-                    <button class="btn btn-primary" data-action="start-practice">
-                        Comenzar Práctica
-                    </button>
-                    <button class="btn btn-secondary" data-action="view-progress">
-                        Ver Mi Progreso
-                    </button>
+            <div class="content-container">
+                <!-- Hero Section -->
+                <div class="card hero-card">
+                    <div class="card-header">
+                        <h1 class="card-title">Preparación ENARM</h1>
+                        <p class="card-subtitle">Plataforma integral para el Examen Nacional de Aspirantes a Residencias Médicas</p>
+                    </div>
+                    
+                    <p class="hero-description">
+                        Domina tu ENARM con confianza. Practica con preguntas especializadas y monitorea tu progreso de manera efectiva.
+                    </p>
+                    
+                    <div class="hero-actions">
+                        <button class="btn btn-primary" data-action="start-practice">
+                            Comenzar Práctica
+                        </button>
+                        <button class="btn btn-secondary" data-action="view-progress">
+                            Ver Mi Progreso
+                        </button>
+                    </div>
                 </div>
-                
+
                 <!-- Daily Usage Stats -->
                 <div class="daily-stats"></div>
                 
-                <h2>Estadísticas de la Plataforma</h2>
-                <div class="specifications-table">
-                    <table>
-                        <tr>
-                            <td>Preguntas Disponibles</td>
-                            <td id="total-questions">500+</td>
-                        </tr>
-                        <tr>
-                            <td>Especialidades Médicas</td>
-                            <td>10 áreas</td>
-                        </tr>
-                        <tr>
-                            <td>Tu Progreso</td>
-                            <td><span id="user-progress">0%</span> completado</td>
-                        </tr>
-                    </table>
+                <!-- Platform Stats -->
+                <div class="card stats-card">
+                    <div class="card-header">
+                        <h2 class="card-title">Estadísticas de la Plataforma</h2>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-value" id="total-questions">500+</div>
+                            <div class="stat-label">Preguntas Disponibles</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">10</div>
+                            <div class="stat-label">Especialidades Médicas</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="user-progress">0%</div>
+                            <div class="stat-label">Tu Progreso</div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -211,7 +219,7 @@
 
         <!-- Practice Page -->
         <section id="practice-page" class="page">
-            <div class="paper-section">
+            <div class="content-section">
                 <h1>Banco de Preguntas ENARM</h1>
                 
                 <p>
@@ -376,7 +384,7 @@
 
         <!-- Progress Page -->
         <section id="progress-page" class="page">
-            <div class="paper-section">
+            <div class="content-section">
                 <h1>Mi Progreso</h1>
                 
                 <p>
