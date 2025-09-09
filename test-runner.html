@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ENARM Prep - Test Runner</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .header {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
+        }
+        
+        .header h1 {
+            color: #2563eb;
+            margin-bottom: 0.5rem;
+        }
+        
+        .header p {
+            color: #64748b;
+        }
+        
+        .controls {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #1d4ed8;
+        }
+        
+        .btn-secondary {
+            background: #64748b;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #475569;
+        }
+        
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #059669;
+        }
+        
+        .results {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+        
+        .results-header {
+            background: #f1f5f9;
+            padding: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .results-content {
+            padding: 1.5rem;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: #f8fafc;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid transparent;
+        }
+        
+        .stat-card.passed {
+            border-color: #10b981;
+            background: #ecfdf5;
+        }
+        
+        .stat-card.failed {
+            border-color: #ef4444;
+            background: #fef2f2;
+        }
+        
+        .stat-card.skipped {
+            border-color: #f59e0b;
+            background: #fffbeb;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.25rem;
+        }
+        
+        .stat-label {
+            font-size: 0.875rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+        
+        .test-output {
+            background: #1e293b;
+            color: #f1f5f9;
+            padding: 1.5rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+            line-height: 1.5;
+            max-height: 500px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            margin-bottom: 2rem;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: #2563eb;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+        
+        .test-list {
+            margin-top: 2rem;
+        }
+        
+        .test-item {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .test-status {
+            font-size: 1.5rem;
+        }
+        
+        .test-details {
+            flex: 1;
+        }
+        
+        .test-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .test-duration {
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+        
+        .test-error {
+            background: #fef2f2;
+            border: 1px solid #f87171;
+            padding: 0.75rem;
+            border-radius: 6px;
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+            color: #dc2626;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: #64748b;
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 2rem;
+            height: 2rem;
+            border: 3px solid #e2e8f0;
+            border-top: 3px solid #2563eb;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .test-suites {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .suite-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 2px solid #e2e8f0;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .suite-card:hover {
+            border-color: #2563eb;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
+        }
+        
+        .suite-card.selected {
+            border-color: #2563eb;
+            background: #eff6ff;
+        }
+        
+        .suite-name {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .suite-description {
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+        
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🧪 ENARM Prep Test Runner</h1>
+            <p>Automated testing suite for the ENARM medical exam preparation application</p>
+        </div>
+
+        <!-- Test Suite Selection -->
+        <div class="results" id="suite-selection">
+            <div class="results-header">
+                <h2>Select Test Suites to Run</h2>
+            </div>
+            <div class="results-content">
+                <div class="test-suites" id="test-suites">
+                    <div class="suite-card" data-suite="all">
+                        <div class="suite-name">🏃‍♂️ All Tests</div>
+                        <div class="suite-description">Run the complete test suite</div>
+                    </div>
+                    <div class="suite-card" data-suite="session-manager">
+                        <div class="suite-name">📝 SessionManager</div>
+                        <div class="suite-description">Test session lifecycle and question management</div>
+                    </div>
+                    <div class="suite-card" data-suite="timer-service">
+                        <div class="suite-name">⏱️ TimerService</div>
+                        <div class="suite-description">Test timer functionality and controls</div>
+                    </div>
+                    <div class="suite-card" data-suite="analytics">
+                        <div class="suite-name">📊 AnalyticsCalculator</div>
+                        <div class="suite-description">Test performance metrics and calculations</div>
+                    </div>
+                    <div class="suite-card" data-suite="achievements">
+                        <div class="suite-name">🏆 AchievementManager</div>
+                        <div class="suite-description">Test achievement system and notifications</div>
+                    </div>
+                    <div class="suite-card" data-suite="filters">
+                        <div class="suite-name">🔍 QuestionFilterService</div>
+                        <div class="suite-description">Test question filtering and search</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+            <button class="btn btn-primary" id="run-tests">
+                ▶️ Run Selected Tests
+            </button>
+            <button class="btn btn-secondary" id="clear-output">
+                🗑️ Clear Output
+            </button>
+            <button class="btn btn-success" id="export-results">
+                💾 Export Results
+            </button>
+            <label style="margin-left: auto;">
+                <input type="checkbox" id="verbose-mode" style="margin-right: 0.5rem;">
+                Verbose Output
+            </label>
+        </div>
+
+        <!-- Results -->
+        <div class="results" id="test-results">
+            <div class="results-header">
+                <h2>Test Results</h2>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+            </div>
+            <div class="results-content">
+                <!-- Statistics -->
+                <div class="stats-grid" id="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-total">0</div>
+                        <div class="stat-label">Total Tests</div>
+                    </div>
+                    <div class="stat-card passed">
+                        <div class="stat-value" id="stat-passed">0</div>
+                        <div class="stat-label">Passed</div>
+                    </div>
+                    <div class="stat-card failed">
+                        <div class="stat-value" id="stat-failed">0</div>
+                        <div class="stat-label">Failed</div>
+                    </div>
+                    <div class="stat-card skipped">
+                        <div class="stat-value" id="stat-skipped">0</div>
+                        <div class="stat-label">Skipped</div>
+                    </div>
+                </div>
+
+                <!-- Console Output -->
+                <div class="test-output" id="test-output">
+                    Ready to run tests. Select test suites and click "Run Selected Tests".
+                </div>
+
+                <!-- Test Details -->
+                <div class="test-list" id="test-list"></div>
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        <div class="loading hidden" id="loading">
+            <div class="spinner"></div>
+            <div>Running tests...</div>
+        </div>
+    </div>
+
+    <!-- Dependencies - Load in Order -->
+    <script src="js/constants.js"></script>
+    <script src="js/error-handler.js"></script>
+    <script src="js/storage-service.js"></script>
+    <script src="js/common-utils.js"></script>
+    
+    <!-- Services -->
+    <script src="js/timer-service.js"></script>
+    <script src="js/session-manager.js"></script>
+    <script src="js/analytics-calculator.js"></script>
+    <script src="js/achievement-manager.js"></script>
+    <script src="js/question-filter-service.js"></script>
+    <script src="js/performance-manager.js"></script>
+    
+    <!-- Test Framework -->
+    <script src="tests/test-framework.js"></script>
+    
+    <!-- Test Suites -->
+    <script src="tests/session-manager.test.js"></script>
+
+    <script>
+        class TestRunner {
+            constructor() {
+                this.selectedSuites = new Set(['all']);
+                this.isRunning = false;
+                this.consoleOutput = [];
+                this.originalConsole = {};
+                this.setupUI();
+                this.interceptConsole();
+            }
+
+            setupUI() {
+                // Suite selection
+                document.getElementById('test-suites').addEventListener('click', (e) => {
+                    const suiteCard = e.target.closest('.suite-card');
+                    if (!suiteCard) return;
+
+                    const suite = suiteCard.dataset.suite;
+                    
+                    if (suite === 'all') {
+                        // Clear all selections and select all
+                        this.selectedSuites.clear();
+                        this.selectedSuites.add('all');
+                        this.updateSuiteSelection();
+                    } else {
+                        // Toggle individual suite
+                        this.selectedSuites.delete('all');
+                        if (this.selectedSuites.has(suite)) {
+                            this.selectedSuites.delete(suite);
+                        } else {
+                            this.selectedSuites.add(suite);
+                        }
+                        
+                        // If none selected, select all
+                        if (this.selectedSuites.size === 0) {
+                            this.selectedSuites.add('all');
+                        }
+                        
+                        this.updateSuiteSelection();
+                    }
+                });
+
+                // Control buttons
+                document.getElementById('run-tests').addEventListener('click', () => {
+                    this.runTests();
+                });
+
+                document.getElementById('clear-output').addEventListener('click', () => {
+                    this.clearOutput();
+                });
+
+                document.getElementById('export-results').addEventListener('click', () => {
+                    this.exportResults();
+                });
+
+                this.updateSuiteSelection();
+            }
+
+            updateSuiteSelection() {
+                const suiteCards = document.querySelectorAll('.suite-card');
+                suiteCards.forEach(card => {
+                    const suite = card.dataset.suite;
+                    card.classList.toggle('selected', this.selectedSuites.has(suite));
+                });
+            }
+
+            interceptConsole() {
+                this.originalConsole = {
+                    log: console.log,
+                    error: console.error,
+                    warn: console.warn
+                };
+
+                const outputElement = document.getElementById('test-output');
+                
+                console.log = (...args) => {
+                    this.originalConsole.log(...args);
+                    const message = args.join(' ');
+                    this.consoleOutput.push(message);
+                    outputElement.textContent = this.consoleOutput.join('\n');
+                    outputElement.scrollTop = outputElement.scrollHeight;
+                };
+
+                console.error = (...args) => {
+                    this.originalConsole.error(...args);
+                    const message = '❌ ' + args.join(' ');
+                    this.consoleOutput.push(message);
+                    outputElement.textContent = this.consoleOutput.join('\n');
+                    outputElement.scrollTop = outputElement.scrollHeight;
+                };
+
+                console.warn = (...args) => {
+                    this.originalConsole.warn(...args);
+                    const message = '⚠️ ' + args.join(' ');
+                    this.consoleOutput.push(message);
+                    outputElement.textContent = this.consoleOutput.join('\n');
+                    outputElement.scrollTop = outputElement.scrollHeight;
+                };
+            }
+
+            async runTests() {
+                if (this.isRunning) return;
+
+                this.isRunning = true;
+                this.clearOutput();
+                
+                document.getElementById('loading').classList.remove('hidden');
+                document.getElementById('run-tests').disabled = true;
+
+                try {
+                    // Reset test framework
+                    TestFramework.reset();
+
+                    // Run tests and get results
+                    const results = await TestFramework.runTests();
+                    
+                    // Update statistics
+                    this.updateStatistics(results);
+                    
+                    // Update test details
+                    this.updateTestDetails(results);
+                    
+                    // Update progress bar
+                    this.updateProgressBar(results);
+
+                } catch (error) {
+                    console.error('Test runner error:', error);
+                } finally {
+                    this.isRunning = false;
+                    document.getElementById('loading').classList.add('hidden');
+                    document.getElementById('run-tests').disabled = false;
+                }
+            }
+
+            updateStatistics(results) {
+                document.getElementById('stat-total').textContent = results.total;
+                document.getElementById('stat-passed').textContent = results.passed;
+                document.getElementById('stat-failed').textContent = results.failed;
+                document.getElementById('stat-skipped').textContent = results.skipped;
+            }
+
+            updateProgressBar(results) {
+                const percentage = results.total > 0 ? (results.passed / results.total) * 100 : 0;
+                document.getElementById('progress-fill').style.width = percentage + '%';
+                
+                // Change color based on success rate
+                const progressFill = document.getElementById('progress-fill');
+                if (percentage === 100) {
+                    progressFill.style.background = '#10b981'; // Green
+                } else if (percentage >= 80) {
+                    progressFill.style.background = '#f59e0b'; // Yellow
+                } else {
+                    progressFill.style.background = '#ef4444'; // Red
+                }
+            }
+
+            updateTestDetails(results) {
+                const testList = document.getElementById('test-list');
+                testList.innerHTML = '';
+
+                if (results.details && results.details.length > 0) {
+                    results.details.forEach(test => {
+                        const testItem = document.createElement('div');
+                        testItem.className = 'test-item';
+                        
+                        const statusIcon = test.status === 'passed' ? '✅' : 
+                                         test.status === 'failed' ? '❌' : '⏭️';
+                        
+                        testItem.innerHTML = `
+                            <div class="test-status">${statusIcon}</div>
+                            <div class="test-details">
+                                <div class="test-name">${test.description}</div>
+                                <div class="test-duration">${test.duration}ms</div>
+                                ${test.suite ? `<div class="test-duration">Suite: ${test.suite}</div>` : ''}
+                                ${test.error ? `<div class="test-error">${test.error.message}</div>` : ''}
+                            </div>
+                        `;
+                        
+                        testList.appendChild(testItem);
+                    });
+                }
+            }
+
+            clearOutput() {
+                this.consoleOutput = [];
+                document.getElementById('test-output').textContent = 'Output cleared. Ready to run tests.';
+                document.getElementById('test-list').innerHTML = '';
+                
+                // Reset statistics
+                document.getElementById('stat-total').textContent = '0';
+                document.getElementById('stat-passed').textContent = '0';
+                document.getElementById('stat-failed').textContent = '0';
+                document.getElementById('stat-skipped').textContent = '0';
+                
+                // Reset progress bar
+                document.getElementById('progress-fill').style.width = '0%';
+            }
+
+            exportResults() {
+                const results = TestFramework.exportResults();
+                const blob = new Blob([JSON.stringify(results, null, 2)], { 
+                    type: 'application/json' 
+                });
+                
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `enarm-test-results-${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }
+        }
+
+        // Initialize test runner
+        document.addEventListener('DOMContentLoaded', () => {
+            window.testRunner = new TestRunner();
+        });
+    </script>
+</body>
+</html>

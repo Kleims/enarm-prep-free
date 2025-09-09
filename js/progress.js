@@ -1,9 +1,15 @@
 // ENARM Progress Tracking and Analytics System
 class ProgressManager {
-    constructor() {
+    constructor(achievementManager = null, chartService = null, analyticsCalculator = null) {
         this.storageKey = 'enarm-progress';
         this.sessionStorageKey = 'enarm-session';
         this.charts = {};
+        
+        // Service dependencies (with fallback for backward compatibility)
+        this.achievementManager = achievementManager;
+        this.chartService = chartService;
+        this.analyticsCalculator = analyticsCalculator;
+        
         this.init();
     }
 
@@ -264,21 +270,28 @@ class ProgressManager {
     // Analytics and Statistics
     getOverallStats() {
         const data = this.getProgressData();
-        const accuracy = data.statistics.totalQuestions > 0 
-            ? (data.statistics.correctAnswers / data.statistics.totalQuestions) * 100 
-            : 0;
-            
-        return {
-            totalQuestions: data.statistics.totalQuestions,
-            correctAnswers: data.statistics.correctAnswers,
-            accuracy: Math.round(accuracy),
-            totalTime: this.formatDuration(data.statistics.totalTime),
-            studyStreak: data.user.studyStreak,
-            bestStreak: data.statistics.bestStreak,
-            sessions: data.sessions.length,
-            averageTime: Math.round(data.statistics.averageTime),
-            improvements: this.calculateImprovement(data)
-        };
+        
+        if (this.analyticsCalculator) {
+            // Use enhanced analytics for richer statistics
+            return this.analyticsCalculator.calculateEnhancedStats(data);
+        } else {
+            // Fallback to legacy statistics
+            const accuracy = data.statistics.totalQuestions > 0 
+                ? (data.statistics.correctAnswers / data.statistics.totalQuestions) * 100 
+                : 0;
+                
+            return {
+                totalQuestions: data.statistics.totalQuestions,
+                correctAnswers: data.statistics.correctAnswers,
+                accuracy: Math.round(accuracy),
+                totalTime: this.formatDuration(data.statistics.totalTime),
+                studyStreak: data.user.studyStreak,
+                bestStreak: data.statistics.bestStreak,
+                sessions: data.sessions.length,
+                averageTime: Math.round(data.statistics.averageTime),
+                improvements: this.calculateImprovement(data)
+            };
+        }
     }
 
     getCategoryStats() {
@@ -329,12 +342,40 @@ class ProgressManager {
 
     // Chart Generation
     updateProgressCharts() {
-        this.createSpecialtyChart();
-        this.createWeeklyChart();
-        this.createPerformanceChart();
+        if (this.chartService) {
+            // Use new ChartService for chart creation
+            this.createSpecialtyChart();
+            this.createWeeklyChart();
+            this.createPerformanceChart();
+        } else {
+            // Fallback to original chart creation
+            this.createSpecialtyChartLegacy();
+            this.createWeeklyChartLegacy();
+            this.createPerformanceChartLegacy();
+        }
     }
 
     createSpecialtyChart() {
+        if (!this.chartService) {
+            return this.createSpecialtyChartLegacy();
+        }
+        
+        const canvas = document.getElementById('specialty-chart');
+        if (!canvas) return;
+
+        const categoryStats = this.getCategoryStats();
+        
+        this.charts.specialty = this.chartService.createDoughnutChart(canvas, {
+            labels: categoryStats.map(c => c.name),
+            data: categoryStats.map(c => c.total),
+            tooltipFormatter: (context) => {
+                const category = categoryStats[context.dataIndex];
+                return `${context.label}: ${context.parsed} preguntas (${category.accuracy}% precisión)`;
+            }
+        });
+    }
+
+    createSpecialtyChartLegacy() {
         const canvas = document.getElementById('specialty-chart');
         if (!canvas) return;
 
@@ -378,6 +419,35 @@ class ProgressManager {
     }
 
     createWeeklyChart() {
+        if (!this.chartService) {
+            return this.createWeeklyChartLegacy();
+        }
+        
+        const canvas = document.getElementById('weekly-chart');
+        if (!canvas) return;
+
+        const data = this.getProgressData();
+        const last7Days = data.performance.daily.slice(-7);
+
+        this.charts.weekly = this.chartService.createLineChart(canvas, {
+            labels: last7Days.map(d => this.formatDateForChart(d.date)),
+            datasets: [
+                {
+                    label: 'Preguntas respondidas',
+                    data: last7Days.map(d => d.questions),
+                    borderColor: '#3b82f6'
+                },
+                {
+                    label: 'Precisión (%)',
+                    data: last7Days.map(d => d.accuracy),
+                    borderColor: '#10b981',
+                    yAxisMax: 100
+                }
+            ]
+        });
+    }
+
+    createWeeklyChartLegacy() {
         const canvas = document.getElementById('weekly-chart');
         if (!canvas) return;
 
@@ -433,7 +503,16 @@ class ProgressManager {
     }
 
     createPerformanceChart() {
-        // Create additional performance visualizations as needed
+        if (!this.chartService) {
+            return this.createPerformanceChartLegacy();
+        }
+        
+        // Use ChartService for additional performance visualizations
+        this.updateProgressDisplay();
+    }
+
+    createPerformanceChartLegacy() {
+        // Legacy performance chart creation
         this.updateProgressDisplay();
     }
 
@@ -479,6 +558,22 @@ class ProgressManager {
 
     // Achievement System
     checkAchievements(data, session) {
+        if (this.achievementManager) {
+            // Use new AchievementManager service
+            this.achievementManager.checkAchievements({
+                totalQuestions: data.statistics.totalQuestions,
+                studyStreak: data.user.studyStreak,
+                sessionStats: session,
+                categoryStats: this.getCategoryStats(),
+                overallStats: this.getOverallStats()
+            });
+        } else {
+            // Fallback to legacy achievement checking
+            this.checkAchievementsLegacy(data, session);
+        }
+    }
+
+    checkAchievementsLegacy(data, session) {
         const achievements = [];
         
         // First question achievement
@@ -676,64 +771,22 @@ class ProgressManager {
     }
 }
 
-// Add CSS for achievements
-const achievementStyles = `
-    @keyframes slideInAchievement {
-        from {
-            transform: translateX(100%);
-            opacity: 0;
-        }
-        to {
-            transform: translateX(0);
-            opacity: 1;
-        }
-    }
-    
-    @keyframes slideOutAchievement {
-        from {
-            transform: translateX(0);
-            opacity: 1;
-        }
-        to {
-            transform: translateX(100%);
-            opacity: 0;
-        }
-    }
-    
-    .achievement-icon {
-        font-size: 2rem;
-        flex-shrink: 0;
-    }
-    
-    .achievement-title {
-        font-weight: 600;
-        margin-bottom: 4px;
-    }
-    
-    .achievement-description {
-        font-size: 0.875rem;
-        opacity: 0.9;
-    }
-    
-    .accuracy-badge {
-        padding: 4px 8px;
-        border-radius: 12px;
-        font-size: 0.75rem;
-        font-weight: 600;
-    }
-    
-    .accuracy-excellent { background-color: #10b981; color: white; }
-    .accuracy-good { background-color: #f59e0b; color: white; }
-    .accuracy-fair { background-color: #ef4444; color: white; }
-    .accuracy-poor { background-color: #6b7280; color: white; }
-`;
-
-// Inject achievement styles
-const styleSheet = document.createElement('style');
-styleSheet.textContent = achievementStyles;
-document.head.appendChild(styleSheet);
-
-// Initialize progress manager
+// Initialize progress manager with service dependencies
 document.addEventListener('DOMContentLoaded', () => {
-    window.progressManager = new ProgressManager();
+    // Initialize services if not already initialized
+    if (!window.achievementManager) {
+        window.achievementManager = new AchievementManager();
+    }
+    if (!window.chartService) {
+        window.chartService = new ChartService();
+    }
+    if (!window.analyticsCalculator) {
+        window.analyticsCalculator = new AnalyticsCalculator();
+    }
+    
+    window.progressManager = new ProgressManager(
+        window.achievementManager,
+        window.chartService,
+        window.analyticsCalculator
+    );
 });
