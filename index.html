@@ -227,49 +227,128 @@
                     que deseas estudiar para personalizar tu experiencia de aprendizaje.
                 </p>
 
-                <h2>Configuración de Práctica</h2>
+                <!-- Practice Mode Selection -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Selecciona Modo de Práctica</h2>
+                        <p class="card-subtitle">Elige el tipo de sesión que mejor se adapte a tu preparación</p>
+                    </div>
+                    
+                    <div class="practice-modes-grid">
+                        <!-- Exam Simulation -->
+                        <div class="practice-mode-card" data-mode="exam_simulation">
+                            <div class="mode-icon">🏆</div>
+                            <h3>Simulación de Examen</h3>
+                            <p>Examen completo de 280 preguntas en 5 horas. Condiciones reales del ENARM.</p>
+                            <div class="mode-stats">
+                                <span class="stat">280 preguntas</span>
+                                <span class="stat">5 horas</span>
+                                <span class="stat">Sin explicaciones</span>
+                            </div>
+                            <button class="btn btn-primary mode-select-btn">Iniciar Simulación</button>
+                        </div>
+                        
+                        <!-- Timed Practice -->
+                        <div class="practice-mode-card" data-mode="timed_practice">
+                            <div class="mode-icon">⏱️</div>
+                            <h3>Práctica con Tiempo</h3>
+                            <p>Sesión personalizada con tiempo límite. Perfecta para entrenar velocidad.</p>
+                            <div class="mode-stats">
+                                <span class="stat">10-50 preguntas</span>
+                                <span class="stat">15min-1h</span>
+                                <span class="stat">Cronometrada</span>
+                            </div>
+                            <button class="btn btn-primary mode-select-btn">Configurar Tiempo</button>
+                        </div>
+                        
+                        <!-- Study Mode -->
+                        <div class="practice-mode-card" data-mode="study">
+                            <div class="mode-icon">📚</div>
+                            <h3>Modo Estudio</h3>
+                            <p>Práctica relajada con explicaciones inmediatas. Ideal para aprender.</p>
+                            <div class="mode-stats">
+                                <span class="stat">Sin límite</span>
+                                <span class="stat">Sin tiempo</span>
+                                <span class="stat">Con explicaciones</span>
+                            </div>
+                            <button class="btn btn-secondary mode-select-btn">Comenzar Estudio</button>
+                        </div>
+                        
+                        <!-- Review Mode -->
+                        <div class="practice-mode-card" data-mode="review">
+                            <div class="mode-icon">🔄</div>
+                            <h3>Revisar Incorrectas</h3>
+                            <p>Repasa las preguntas que has fallado anteriormente para mejorar.</p>
+                            <div class="mode-stats">
+                                <span class="stat">Personalizadas</span>
+                                <span class="stat">Flexible</span>
+                                <span class="stat">Refuerzo</span>
+                            </div>
+                            <button class="btn btn-secondary mode-select-btn">Revisar Fallos</button>
+                        </div>
+                    </div>
+                </div>
                 
-                <!-- Practice Controls -->
-                <div class="practice-controls">
-                    <div class="control-group">
-                        <label for="specialty-filter">Especialidad:</label>
-                        <select id="specialty-filter">
-                            <option value="">Todas las especialidades</option>
-                            <option value="medicina-interna">Medicina Interna</option>
-                            <option value="cirugia-general">Cirugía General</option>
-                            <option value="pediatria">Pediatría</option>
-                            <option value="ginecologia">Ginecología y Obstetricia</option>
-                            <option value="medicina-familiar">Medicina Familiar</option>
-                            <option value="urgencias">Urgencias Médicas</option>
-                            <option value="cardiologia">Cardiología</option>
-                            <option value="neurologia">Neurología</option>
-                            <option value="gastroenterologia">Gastroenterología</option>
-                            <option value="endocrinologia">Endocrinología</option>
-                        </select>
+                <!-- Configuration Panel (Hidden by default) -->
+                <div class="card config-panel" id="config-panel" style="display: none;">
+                    <div class="card-header">
+                        <h3 class="card-title">Configuración de Sesión</h3>
+                        <p class="card-subtitle" id="config-subtitle">Personaliza tu sesión de práctica</p>
                     </div>
+                    
+                    <div class="config-grid">
+                        <div class="control-group">
+                            <label for="specialty-filter">Especialidad:</label>
+                            <select id="specialty-filter">
+                                <option value="">Todas las especialidades</option>
+                                <option value="Medicina Interna">Medicina Interna</option>
+                                <option value="Cirugía General">Cirugía General</option>
+                                <option value="Pediatría">Pediatría</option>
+                                <option value="Ginecología y Obstetricia">Ginecología y Obstetricia</option>
+                                <option value="Medicina Familiar">Medicina Familiar</option>
+                                <option value="Urgencias Médicas">Urgencias Médicas</option>
+                                <option value="Cardiología">Cardiología</option>
+                                <option value="Neurología">Neurología</option>
+                                <option value="Gastroenterología">Gastroenterología</option>
+                                <option value="Endocrinología">Endocrinología</option>
+                            </select>
+                        </div>
 
-                    <div class="control-group">
-                        <label for="difficulty-filter">Dificultad:</label>
-                        <select id="difficulty-filter">
-                            <option value="">Todas las dificultades</option>
-                            <option value="basico">Básico</option>
-                            <option value="intermedio">Intermedio</option>
-                            <option value="avanzado">Avanzado</option>
-                        </select>
+                        <div class="control-group">
+                            <label for="difficulty-filter">Dificultad:</label>
+                            <select id="difficulty-filter">
+                                <option value="">Todas las dificultades</option>
+                                <option value="basico">Básico</option>
+                                <option value="intermedio">Intermedio</option>
+                                <option value="avanzado">Avanzado</option>
+                            </select>
+                        </div>
+
+                        <div class="control-group" id="questions-count-group">
+                            <label for="questions-count">Número de preguntas:</label>
+                            <select id="questions-count">
+                                <option value="10">10 preguntas</option>
+                                <option value="25">25 preguntas</option>
+                                <option value="50" selected>50 preguntas</option>
+                                <option value="100">100 preguntas</option>
+                            </select>
+                        </div>
+                        
+                        <div class="control-group" id="time-limit-group">
+                            <label for="time-limit">Tiempo límite:</label>
+                            <select id="time-limit">
+                                <option value="15">15 minutos</option>
+                                <option value="30">30 minutos</option>
+                                <option value="60" selected>1 hora</option>
+                                <option value="90">1.5 horas</option>
+                                <option value="120">2 horas</option>
+                            </select>
+                        </div>
                     </div>
-
-                    <div class="control-group">
-                        <label for="question-mode">Modo:</label>
-                        <select id="question-mode">
-                            <option value="study">Estudio (con explicación)</option>
-                            <option value="exam">Examen (sin explicación)</option>
-                            <option value="review">Revisar incorrectas</option>
-                        </select>
-                    </div>
-
-                    <div class="control-group">
-                        <button class="btn btn-primary" id="start-practice">Comenzar Práctica</button>
-                        <button class="btn btn-secondary" id="random-question">Pregunta Aleatoria</button>
+                    
+                    <div class="config-actions">
+                        <button class="btn btn-primary" id="start-session">Iniciar Sesión</button>
+                        <button class="btn btn-secondary" id="cancel-config">Cancelar</button>
                     </div>
                 </div>
 
@@ -282,9 +361,21 @@
                             <span class="question-category" id="question-category">Cardiología</span>
                         </div>
                         
+                        <div class="question-actions">
+                            <button class="btn-icon" id="bookmark-question" aria-label="Marcar pregunta">
+                                ☆
+                            </button>
+                        </div>
+                        
                         <div class="question-timer">
-                            <span class="timer-label">Tiempo:</span>
-                            <span class="timer-display" id="timer-display">02:30</span>
+                            <div class="timer-info">
+                                <span class="timer-label">Tiempo por pregunta:</span>
+                                <span class="timer-display" id="timer-display">02:30</span>
+                            </div>
+                            <div class="session-timer" id="session-timer-display" style="display: none;">
+                                <span class="session-timer-label">Tiempo total:</span>
+                                <span class="session-timer-value" id="session-timer">01:00:00</span>
+                            </div>
                         </div>
                     </div>
 

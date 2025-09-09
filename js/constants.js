@@ -13,9 +13,12 @@ class AppConstants {
 
     static get TIMER() {
         return {
-            DEFAULT_QUESTION_TIME: 150, // 2:30 minutes
-            WARNING_THRESHOLD: 30, // 30 seconds
-            UPDATE_INTERVAL: 1000 // 1 second
+            DEFAULT_QUESTION_TIME: 150, // 2:30 minutes per question
+            WARNING_THRESHOLD: 30, // 30 seconds warning
+            UPDATE_INTERVAL: 1000, // 1 second updates
+            EXAM_TOTAL_TIME: 18000, // 5 hours in seconds (300 minutes)
+            PRACTICE_TOTAL_TIME: 3600, // 1 hour in seconds
+            QUICK_PRACTICE_TIME: 900 // 15 minutes in seconds
         };
     }
 
@@ -72,9 +75,21 @@ class AppConstants {
     static get PRACTICE_MODES() {
         return {
             STUDY: 'study',
-            EXAM: 'exam',
+            EXAM_SIMULATION: 'exam_simulation',
+            TIMED_PRACTICE: 'timed_practice',
             REVIEW: 'review',
             RANDOM: 'random'
+        };
+    }
+
+    static get EXAM_SETTINGS() {
+        return {
+            FULL_EXAM_QUESTIONS: 280,
+            FULL_EXAM_DURATION: 300, // 5 hours in minutes
+            PRACTICE_EXAM_QUESTIONS: 50,
+            PRACTICE_EXAM_DURATION: 60, // 1 hour in minutes
+            QUICK_PRACTICE_QUESTIONS: 10,
+            QUICK_PRACTICE_DURATION: 15 // 15 minutes
         };
     }
 

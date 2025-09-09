@@ -11,6 +11,18 @@ class ENARMApp {
         this.timeRemaining = 0;
         this.freemiumManager = null;
         
+        // Practice Mode Properties
+        this.currentPracticeMode = null;
+        this.sessionTimer = null;
+        this.totalSessionTime = 0;
+        this.sessionTimeRemaining = 0;
+        this.sessionConfig = {
+            specialty: '',
+            difficulty: '',
+            questionsCount: 10,
+            timeLimit: 0
+        };
+        
         this.init();
     }
 
@@ -92,6 +104,26 @@ class ENARMApp {
                 navMenu.classList.toggle('active');
                 navHamburger.classList.toggle('active');
             });
+        }
+
+        // Practice mode selection
+        document.addEventListener('click', (e) => {
+            if (e.target.matches('.mode-select-btn')) {
+                const modeCard = e.target.closest('.practice-mode-card');
+                const mode = modeCard.getAttribute('data-mode');
+                this.selectPracticeMode(mode);
+            }
+        });
+
+        // Configuration panel
+        const startSessionBtn = document.getElementById('start-session');
+        if (startSessionBtn) {
+            startSessionBtn.addEventListener('click', () => this.startConfiguredSession());
+        }
+
+        const cancelConfigBtn = document.getElementById('cancel-config');
+        if (cancelConfigBtn) {
+            cancelConfigBtn.addEventListener('click', () => this.cancelConfiguration());
         }
 
         // Practice controls
@@ -762,6 +794,284 @@ class ENARMApp {
             pane.classList.remove('active');
         });
         document.getElementById(tabId).classList.add('active');
+    }
+
+    // Practice Mode Management
+    selectPracticeMode(mode) {
+        this.currentPracticeMode = mode;
+        const configPanel = document.getElementById('config-panel');
+        const configSubtitle = document.getElementById('config-subtitle');
+        const questionsCountGroup = document.getElementById('questions-count-group');
+        const timeLimitGroup = document.getElementById('time-limit-group');
+        
+        // Reset configuration panel visibility
+        questionsCountGroup.style.display = 'flex';
+        timeLimitGroup.style.display = 'flex';
+        
+        switch(mode) {
+            case AppConstants.PRACTICE_MODES.EXAM_SIMULATION:
+                configSubtitle.textContent = 'Simulación completa del ENARM - 280 preguntas en 5 horas';
+                questionsCountGroup.style.display = 'none';
+                timeLimitGroup.style.display = 'none';
+                this.sessionConfig.questionsCount = AppConstants.EXAM_SETTINGS.FULL_EXAM_QUESTIONS;
+                this.sessionConfig.timeLimit = AppConstants.EXAM_SETTINGS.FULL_EXAM_DURATION;
+                break;
+                
+            case AppConstants.PRACTICE_MODES.TIMED_PRACTICE:
+                configSubtitle.textContent = 'Práctica con límite de tiempo personalizable';
+                break;
+                
+            case AppConstants.PRACTICE_MODES.STUDY:
+                configSubtitle.textContent = 'Modo estudio con explicaciones y sin límite de tiempo';
+                timeLimitGroup.style.display = 'none';
+                this.sessionConfig.timeLimit = 0;
+                break;
+                
+            case AppConstants.PRACTICE_MODES.REVIEW:
+                configSubtitle.textContent = 'Revisar preguntas respondidas incorrectamente';
+                questionsCountGroup.style.display = 'none';
+                timeLimitGroup.style.display = 'none';
+                break;
+        }
+        
+        configPanel.style.display = 'block';
+        configPanel.scrollIntoView({ behavior: 'smooth' });
+    }
+    
+    cancelConfiguration() {
+        const configPanel = document.getElementById('config-panel');
+        configPanel.style.display = 'none';
+        this.currentPracticeMode = null;
+    }
+    
+    startConfiguredSession() {
+        if (!this.currentPracticeMode) return;
+        
+        // Get configuration values
+        const specialty = document.getElementById('specialty-filter').value;
+        const difficulty = document.getElementById('difficulty-filter').value;
+        const questionsCount = parseInt(document.getElementById('questions-count').value) || 10;
+        const timeLimit = parseInt(document.getElementById('time-limit').value) || 0;
+        
+        this.sessionConfig = {
+            specialty,
+            difficulty,
+            questionsCount: this.currentPracticeMode === AppConstants.PRACTICE_MODES.EXAM_SIMULATION ? 
+                AppConstants.EXAM_SETTINGS.FULL_EXAM_QUESTIONS : questionsCount,
+            timeLimit: this.currentPracticeMode === AppConstants.PRACTICE_MODES.STUDY ? 0 : 
+                (this.currentPracticeMode === AppConstants.PRACTICE_MODES.EXAM_SIMULATION ? 
+                AppConstants.EXAM_SETTINGS.FULL_EXAM_DURATION : timeLimit)
+        };
+        
+        // Hide configuration panel
+        document.getElementById('config-panel').style.display = 'none';
+        
+        // Start the session based on mode
+        switch(this.currentPracticeMode) {
+            case AppConstants.PRACTICE_MODES.EXAM_SIMULATION:
+                this.startExamSimulation();
+                break;
+            case AppConstants.PRACTICE_MODES.TIMED_PRACTICE:
+                this.startTimedPractice();
+                break;
+            case AppConstants.PRACTICE_MODES.STUDY:
+                this.startStudyMode();
+                break;
+            case AppConstants.PRACTICE_MODES.REVIEW:
+                this.startReviewMode();
+                break;
+        }
+    }
+    
+    startExamSimulation() {
+        CommonUtils.showToast('Iniciando simulación de examen ENARM...', 'info');
+        this.setupSessionTimer(this.sessionConfig.timeLimit * 60); // Convert minutes to seconds
+        this.loadQuestionsForSession();
+    }
+    
+    startTimedPractice() {
+        CommonUtils.showToast(`Iniciando práctica cronometrada - ${this.sessionConfig.timeLimit} minutos`, 'info');
+        this.setupSessionTimer(this.sessionConfig.timeLimit * 60);
+        this.loadQuestionsForSession();
+    }
+    
+    startStudyMode() {
+        CommonUtils.showToast('Iniciando modo estudio', 'info');
+        this.loadQuestionsForSession();
+    }
+    
+    startReviewMode() {
+        const incorrectQuestions = this.getIncorrectQuestions();
+        if (incorrectQuestions.length === 0) {
+            CommonUtils.showToast('No tienes preguntas incorrectas para revisar', 'info');
+            return;
+        }
+        CommonUtils.showToast(`Revisando ${incorrectQuestions.length} preguntas incorrectas`, 'info');
+        this.sessionQuestions = incorrectQuestions;
+        this.startQuestionSession();
+    }
+    
+    setupSessionTimer(totalSeconds) {
+        this.totalSessionTime = totalSeconds;
+        this.sessionTimeRemaining = totalSeconds;
+        
+        const sessionTimerDisplay = document.getElementById('session-timer-display');
+        if (sessionTimerDisplay) {
+            sessionTimerDisplay.style.display = 'block';
+        }
+        
+        this.updateSessionTimer();
+        
+        this.sessionTimer = setInterval(() => {
+            this.sessionTimeRemaining--;
+            this.updateSessionTimer();
+            
+            if (this.sessionTimeRemaining <= 0) {
+                this.endTimedSession();
+            }
+        }, 1000);
+    }
+    
+    updateSessionTimer() {
+        const sessionTimerElement = document.getElementById('session-timer');
+        if (!sessionTimerElement) return;
+        
+        const hours = Math.floor(this.sessionTimeRemaining / 3600);
+        const minutes = Math.floor((this.sessionTimeRemaining % 3600) / 60);
+        const seconds = this.sessionTimeRemaining % 60;
+        
+        const timeString = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        sessionTimerElement.textContent = timeString;
+        
+        // Add warning classes
+        const warningThreshold = this.totalSessionTime * 0.1; // 10% remaining
+        const dangerThreshold = this.totalSessionTime * 0.05; // 5% remaining
+        
+        sessionTimerElement.className = 'session-timer-value';
+        if (this.sessionTimeRemaining <= dangerThreshold) {
+            sessionTimerElement.classList.add('danger');
+        } else if (this.sessionTimeRemaining <= warningThreshold) {
+            sessionTimerElement.classList.add('warning');
+        }
+    }
+    
+    endTimedSession() {
+        if (this.sessionTimer) {
+            clearInterval(this.sessionTimer);
+            this.sessionTimer = null;
+        }
+        
+        CommonUtils.showToast('¡Tiempo agotado! Sesión finalizada.', 'warning');
+        this.endQuestionSession();
+    }
+    
+    getIncorrectQuestions() {
+        const progress = StorageService.getItem(AppConstants.STORAGE_KEYS.PROGRESS) || { sessions: [] };
+        const incorrectQuestions = [];
+        
+        progress.sessions.forEach(session => {
+            session.results.forEach(result => {
+                if (!result.correct && result.questionId) {
+                    incorrectQuestions.push(result.questionId);
+                }
+            });
+        });
+        
+        // Remove duplicates and get unique question IDs
+        const uniqueIncorrectIds = [...new Set(incorrectQuestions)];
+        
+        // Filter questions from the main question bank
+        // This would need to integrate with your question loading system
+        return uniqueIncorrectIds.slice(0, 50); // Limit to 50 for performance
+    }
+    
+    loadQuestionsForSession() {
+        // This would integrate with your existing question loading logic
+        // For now, we'll call the existing practice start method
+        if (typeof window.questionManager !== 'undefined') {
+            const filters = {
+                specialty: this.sessionConfig.specialty,
+                difficulty: this.sessionConfig.difficulty,
+                count: this.sessionConfig.questionsCount
+            };
+            
+            window.questionManager.startPractice(filters)
+                .then(() => {
+                    this.startQuestionSession();
+                })
+                .catch(error => {
+                    CommonUtils.showToast('Error al cargar preguntas', 'error');
+                    console.error('Error loading questions:', error);
+                });
+        } else {
+            // Fallback to basic question display
+            this.startQuestionSession();
+        }
+    }
+    
+    startQuestionSession() {
+        // Show question container and hide practice mode selection
+        const practiceModesGrid = document.querySelector('.practice-modes-grid');
+        const questionContainer = document.getElementById('question-container');
+        
+        if (practiceModesGrid) practiceModesGrid.style.display = 'none';
+        if (questionContainer) {
+            questionContainer.style.display = 'block';
+            this.loadFirstQuestion();
+        }
+    }
+    
+    loadFirstQuestion() {
+        // This integrates with your existing question display logic
+        if (this.sessionQuestions && this.sessionQuestions.length > 0) {
+            this.currentQuestionIndex = 0;
+            this.displayCurrentQuestion();
+        } else {
+            CommonUtils.showToast('No se encontraron preguntas con los filtros seleccionados', 'warning');
+        }
+    }
+    
+    endQuestionSession() {
+        // Clean up timers
+        if (this.sessionTimer) {
+            clearInterval(this.sessionTimer);
+            this.sessionTimer = null;
+        }
+        
+        if (this.timer) {
+            clearInterval(this.timer);
+            this.timer = null;
+        }
+        
+        // Hide session timer
+        const sessionTimerDisplay = document.getElementById('session-timer-display');
+        if (sessionTimerDisplay) {
+            sessionTimerDisplay.style.display = 'none';
+        }
+        
+        // Show results or return to practice mode selection
+        this.showSessionResults();
+    }
+    
+    showSessionResults() {
+        // This would show a comprehensive results screen
+        const practiceModesGrid = document.querySelector('.practice-modes-grid');
+        const questionContainer = document.getElementById('question-container');
+        
+        if (questionContainer) questionContainer.style.display = 'none';
+        if (practiceModesGrid) practiceModesGrid.style.display = 'grid';
+        
+        // Reset state
+        this.currentPracticeMode = null;
+        this.sessionTimeRemaining = 0;
+        this.totalSessionTime = 0;
+        
+        // Show summary toast
+        const correctAnswers = this.sessionResults.filter(r => r.correct).length;
+        const totalQuestions = this.sessionResults.length;
+        const percentage = Math.round((correctAnswers / totalQuestions) * 100);
+        
+        CommonUtils.showToast(`Sesión completada: ${correctAnswers}/${totalQuestions} (${percentage}%)`, 'success');
     }
 
     // Service Worker
